@@ -9,8 +9,8 @@
 
 #ifdef _DEBUG
 #include <cassert>
-#endif
 #include <iostream>
+#endif
 
 std::mutex IDGenerator::idGeneratorMutex;
 
@@ -44,50 +44,53 @@ std::string IDGenerator::generateTimestamp() {
 #endif
 
     auto tailTime /*chvostikovy cas*/ = microsecondsSinceEpoch - secondsSinceEpoch;
-    /*std::stringstream remainder;
+#ifdef _DEBUG
+    std::cout << tailTime.count() << std::endl;
+#endif
+
+    std::stringstream remainder;
 
     // align the time difference to 6 (six) digits = milliseconds precision (3 digits) + microseconds precision (3 digits)
     //   because milli-, micro- and nanoseconds have each 3 digits precision
     //   thus when the precision is set to microseconds, the number of tail time digits is cumulative
     //  and pad missing digits with '0' (zeros)
-    remainder << std::setw(6) << std::setfill('0') << tailTime.count();
-    timestamp << remainder.str();
-    return timestamp.str();
-    */
+    // TODO align according to precision
+    //  - milliseconds -> 3 chars width
+    //  - microseconds -> 6 chars width
+    //  -  nanoseconds -> 9 chars width
+    remainder << std::setw(6) << std::setfill('0');
+    remainder << tailTime.count();
 
-    auto secondsSinceEpochInMicroseconds = secondsSinceEpoch * 1'000'000;
 #ifdef _DEBUG
-    std::cout << secondsSinceEpochInMicroseconds.count() << std::endl;
-#endif
+    remainder.str("");
+    remainder.clear();
 
-    auto currentTimeMicrosecondsRemainder = microsecondsSinceEpoch.count() - secondsSinceEpochInMicroseconds.count();
-
-    // ↓↓ for testing and debug purposes
-    // currentTimeMicrosecondsRemainder = 0;
-    // currentTimeMicrosecondsRemainder = 1; // for testing and debug purposes
-    // currentTimeMicrosecondsRemainder = 12; // for testing and debug purposes
-    // currentTimeMicrosecondsRemainder = 123; // for testing and debug purposes
-    // currentTimeMicrosecondsRemainder = 1234; // for testing and debug purposes
-    // currentTimeMicrosecondsRemainder = 12345; // for testing and debug purposes
+    // ↓↓ for debug purposes to test the padding
+    //auto currentTimeMicrosecondsRemainder = 0;
+    //auto currentTimeMicrosecondsRemainder = 1;
+    auto currentTimeMicrosecondsRemainder = 12;
+    //auto currentTimeMicrosecondsRemainder = 123;
+    //auto currentTimeMicrosecondsRemainder = 1234;
+    //auto currentTimeMicrosecondsRemainder = 12345;
     // ^^ for testing and debug purposes
 
-#ifdef _DEBUG
     std::cout << currentTimeMicrosecondsRemainder << std::endl;
-    std::cout << timestamp.str() << currentTimeMicrosecondsRemainder << std::endl;
-#endif
 
-    std::stringstream suffix;
-    suffix
-            << std::setw(6) << std::setfill('0')
-            << currentTimeMicrosecondsRemainder;
-    timestamp << suffix.str();
+    // either...
+    // remainder << std::setw(6) << std::setfill('0') << "123"; // for testing and debug purposes
+    //assert(3 == remainder.str().length()); // code like yoda
 
-#ifdef _DEBUG
-    assert(6 == suffix.str().length()); // code like yoda
-    // timestamp << std::setw(6) << std::setfill('0') << "123"; // for testing and debug purposes
+    // ...or
+    remainder << std::setw(6) << std::setfill('0') << currentTimeMicrosecondsRemainder;
+    std::cout << remainder.str() << " : " << remainder.str().length() << std::endl;
+    assert(6 == remainder.str().length()); // code like yoda
+
     std::cout << timestamp.str() << std::endl;
-    assert(20 == timestamp.str().length()); // code like yoda
+    std::cout << timestamp.str() << currentTimeMicrosecondsRemainder << std::endl;
+    std::cout << timestamp.str() << remainder.str() << std::endl;
+    assert(20 == timestamp.str().length() + remainder.str().length()); // code like yoda
 #endif
 
+    timestamp << remainder.str();
     return timestamp.str();
 }
