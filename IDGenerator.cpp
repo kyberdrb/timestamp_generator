@@ -62,6 +62,8 @@ std::string IDGenerator::generateTimestamp() {
     remainder << tailTime.count();
 
 #ifdef _DEBUG
+    std::cout << "DEBUG/DEV VERSION!"
+
     remainder.str("");
     remainder.clear();
 
