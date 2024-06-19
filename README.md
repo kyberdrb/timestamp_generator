@@ -10,7 +10,7 @@ On Windows platform open Git Bash or equivalent LINUX/UNIX like terminal emulato
 Below are provided exmple instructions
 
 ```
-ROJECT_DIR="$(pwd)"
+PROJECT_DIR="$(pwd)"
 echo $PROJECT_DIR
 /c/git/timestamp_generator
 
