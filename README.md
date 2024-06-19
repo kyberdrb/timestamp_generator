@@ -1,5 +1,7 @@
 # Timestamp Generator
 
+Utility to generate a timestamp from current time
+
 ```
 NAME
 timestamp_generator - generates timestamp from current time
