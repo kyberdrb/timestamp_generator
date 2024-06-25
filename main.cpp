@@ -1,4 +1,4 @@
-#include "IDGenerator.h"
+#include "Timestamp.h"
 
 #include <iostream>
 //#include <memory>
@@ -10,10 +10,12 @@ std::unordered_map<std::string, std::string> parseArguments(int argc, char* argv
 
 int main(int argc, char *argv[]) {
     parseArgumentsCPPstyle(argc, argv);
-    std::cout << IDGenerator::generateTimestamp() << std::endl;
+    std::cout << Timestamp::generate() << std::endl;
 
-//    std::unique_ptr<Arguments> arguments = parseArgumentsCPPstyle(argc, argv);
-//    std::cout << IDGenerator::generateTimestamp(arguments) << std::endl;
+//    std::cout << Timestamp::generate(precision, disable_padding = false) << std::endl;
+
+//    std::unique_ptr<Options> options = parseArgumentsCPPstyle(argc, argv);
+//    std::cout << Timestamp::generate(options) << std::endl;
     return 0;
 }
 

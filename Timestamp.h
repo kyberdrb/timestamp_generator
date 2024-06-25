@@ -7,9 +7,9 @@
 #include <mutex>
 #include <string>
 
-class IDGenerator {
+class Timestamp {
     public:
-        static std::string generateTimestamp();
+        static std::string generate();
 
     private:
         static std::mutex idGeneratorMutex;

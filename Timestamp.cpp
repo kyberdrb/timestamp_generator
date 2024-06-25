@@ -2,7 +2,7 @@
 // Created by laptop on 6/14/24.
 //
 
-#include "IDGenerator.h"
+#include "Timestamp.h"
 
 #include <chrono>
 #include <iomanip>
@@ -12,12 +12,12 @@
 #include <iostream>
 #endif
 
-std::mutex IDGenerator::idGeneratorMutex;
+std::mutex Timestamp::idGeneratorMutex;
 
 /// @brief Generates timestamp
 /// @return timestamp with given precision
-std::string IDGenerator::generateTimestamp() {
-    std::lock_guard<std::mutex> lock(IDGenerator::idGeneratorMutex);
+std::string Timestamp::generate() {
+    std::lock_guard<std::mutex> lock(Timestamp::idGeneratorMutex);
 
     auto currentTime = std::chrono::system_clock::now();
     auto currentCalendarTime = std::chrono::system_clock::to_time_t(currentTime);
