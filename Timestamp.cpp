@@ -16,7 +16,7 @@ std::mutex Timestamp::idGeneratorMutex;
 
 /// @brief Generates timestamp
 /// @return timestamp with given precision
-std::string Timestamp::generate() {
+std::string Timestamp::generate(Options const & options) {
     std::lock_guard<std::mutex> lock(Timestamp::idGeneratorMutex);
 
     auto currentTime = std::chrono::system_clock::now();
@@ -32,6 +32,34 @@ std::string Timestamp::generate() {
 #ifdef _DEBUG
     assert(timeSinceEpoch.count() == currentTime.time_since_epoch().count());
 #endif
+
+    // TODO change precision by the 'options' parameter
+    auto durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::nanoseconds>(timeSinceEpoch);
+    switch (options.getPrecision()) {
+        case Options::MILLISECOND:
+            durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
+            break;
+        case Options::MICROSECONDS:
+            durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::microseconds >(timeSinceEpoch);
+            break;
+        case Options::NANOSECONDS:
+//            durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::nanoseconds >(timeSinceEpoch);
+            break;
+//        default:
+//            durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::microseconds>(timeSinceEpoch);
+    }
+
+    if (Options::Precision::MILLISECOND == options.getPrecision() ) {
+        durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
+    }
+
+    if (Options::Precision::MICROSECONDS == options.getPrecision() ) {
+        durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
+    }
+
+    if (Options::Precision::MILLISECOND == options.getPrecision() ) {
+        durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
+    }
 
     auto microsecondsSinceEpoch = std::chrono::duration_cast<std::chrono::microseconds>(timeSinceEpoch);
 #ifdef _DEBUG
@@ -50,7 +78,8 @@ std::string Timestamp::generate() {
 
     std::stringstream remainder;
 
-    // align the time difference to 6 (six) digits = milliseconds precision (3 digits) + microseconds precision (3 digits)
+    // Create padding
+    //   align the time difference to 6 (six) digits = milliseconds precision (3 digits) + microseconds precision (3 digits)
     //   because milli-, micro- and nanoseconds have each 3 digits precision
     //   thus when the precision is set to microseconds, the number of tail time digits is cumulative
     //  and pad missing digits with '0' (zeros)
@@ -58,7 +87,9 @@ std::string Timestamp::generate() {
     //  - milliseconds -> 3 chars width
     //  - microseconds -> 6 chars width
     //  -  nanoseconds -> 9 chars width
-    remainder << std::setw(6) << std::setfill('0');
+    if (options.isPaddingEnabled() ) {
+        remainder << std::setw(6) << std::setfill('0');
+    }
     remainder << tailTime.count();
 
 #ifdef _DEBUG

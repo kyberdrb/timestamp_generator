@@ -15,7 +15,9 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 add_executable(timestamp_generator main.cpp
         Timestamp.cpp
-        Timestamp.h)
+        Timestamp.h
+        Options.cpp
+        Options.h)
 
 # Conditionally add _DEBUG definition for Debug builds
 target_compile_definitions(${PROJECT_NAME} PRIVATE
