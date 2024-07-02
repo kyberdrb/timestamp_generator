@@ -6,13 +6,12 @@
 
 Options::Options() :
         _precision(Precision::MICROSECONDS),
-//        _precision(Precision::NANOSECONDS),
         _nopadding(false)
 {
-    this->setPaddingSizeForPrecision();
+    this->setRemainderPaddingSizeForPrecision();
 }
 
-void Options::setPaddingSizeForPrecision() {
+void Options::setRemainderPaddingSizeForPrecision() {
     switch (this->_precision) {
         case YEAR:
             this->_paddingSize = 0;
@@ -47,39 +46,50 @@ void Options::setPaddingSizeForPrecision() {
 void Options::setPrecision(std::string precision) {
     if ("year" == precision) {
         this->_precision = Precision::YEAR;
+        return;
     }
 
     if ("month" == precision) {
         this->_precision = Precision::MICROSECONDS;
+        return;
     }
 
     if ("day" == precision) {
         this->_precision = Precision::DAY;
+        return;
     }
 
     if ("hour" == precision) {
         this->_precision = Precision::HOUR;
+        return;
     }
 
     if ("minute" == precision) {
         this->_precision = Precision::MINUTE;
+        return;
     }
 
     if ("second" == precision) {
         this->_precision = Precision::SECOND;
+        return;
     }
 
     if ("millisecond" == precision) {
         this->_precision = Precision::MILLISECOND;
+        return;
     }
 
     if ("microsecond" == precision) {
         this->_precision = Precision::MICROSECONDS;
+        return;
     }
 
     if ("nanosecond" == precision) {
         this->_precision = Precision::NANOSECONDS;
+        return;
     }
+
+    this->_precision = Precision::MICROSECONDS;
 }
 
 void Options::disablePadding() {

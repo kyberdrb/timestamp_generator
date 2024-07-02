@@ -23,7 +23,39 @@ std::string Timestamp::generate(Options const & options) {
     auto currentCalendarTime = std::chrono::system_clock::to_time_t(currentTime);
     auto currentLocalCalendarTime = std::localtime(&currentCalendarTime);
     std::stringstream timestamp;
+
+    if (Options::Precision::YEAR == options.getPrecision() ) {
+        timestamp << std::put_time(currentLocalCalendarTime, "%Y");
+        return timestamp.str();
+    }
+
+    if (Options::Precision::MONTH == options.getPrecision() ) {
+        timestamp << std::put_time(currentLocalCalendarTime, "%Y%m");
+        return timestamp.str();
+    }
+
+    if (Options::Precision::DAY == options.getPrecision() ) {
+        timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d");
+        return timestamp.str();
+    }
+
+    if (Options::Precision::HOUR == options.getPrecision() ) {
+        timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H");
+        return timestamp.str();
+    }
+
+    if (Options::Precision::MINUTE == options.getPrecision() ) {
+        timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M");
+        return timestamp.str();
+    }
+
+    if (Options::Precision::SECOND == options.getPrecision() ) {
+        timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
+        return timestamp.str();
+    }
+
     timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
+
 #ifdef _DEBUG
     std::cout << "timestamp: " << timestamp.str() << std::endl;
 #endif
@@ -49,20 +81,53 @@ std::string Timestamp::generate(Options const & options) {
 
     auto durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::nanoseconds>(timeSinceEpoch);
 
+    auto durationSinceEpochInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
+    auto durationSinceEpochInMicroseconds = std::chrono::duration_cast<std::chrono::microseconds >(timeSinceEpoch);
+    auto durationSinceEpochInNanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(timeSinceEpoch);
+
+    auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
+
 #ifdef _DEBUG
     std::cout << "options.getPrecision(): " << options.getPrecision() << std::endl;
 #endif
 
     switch (options.getPrecision() ) {
-        case Options::MILLISECOND:
-            durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
-            break;
-        case Options::MICROSECONDS:
+        case Options::MILLISECOND: {
+            durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds>(timeSinceEpoch);
+            auto tailTime /*chvostikovy cas*/ = durationSinceEpochInMilliseconds - secondsSinceEpochForSwitch;
+            std::stringstream remainder;
+            if (options.isPaddingEnabled()) {
+                remainder << std::setw(3) << std::setfill('0');
+            }
+            remainder << tailTime.count();
+            timestamp << remainder.str();
+            return timestamp.str();
+//            break;
+        }
+        case Options::MICROSECONDS: {
             durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::microseconds >(timeSinceEpoch);
-            break;
-        case Options::NANOSECONDS:
-//            durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::nanoseconds >(timeSinceEpoch);
-            break;
+            auto tailTime /*chvostikovy cas*/ = durationSinceEpochInMicroseconds - secondsSinceEpochForSwitch;
+            std::stringstream remainder;
+            if (options.isPaddingEnabled() ) {
+                remainder << std::setw(6) << std::setfill('0');
+            }
+            remainder << tailTime.count();
+            timestamp << remainder.str();
+            return timestamp.str();
+//            break;
+        }
+        case Options::NANOSECONDS: {
+            durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::nanoseconds >(timeSinceEpoch);
+            auto tailTime /*chvostikovy cas*/ = durationSinceEpochInNanoseconds - secondsSinceEpochForSwitch;
+            std::stringstream remainder;
+            if (options.isPaddingEnabled()) {
+                remainder << std::setw(9) << std::setfill('0');
+            }
+            remainder << tailTime.count();
+            timestamp << remainder.str();
+            return timestamp.str();
+//            break;
+        }
 //        default:
 //            durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::microseconds>(timeSinceEpoch);
     }
@@ -110,6 +175,7 @@ std::string Timestamp::generate(Options const & options) {
 #ifdef _DEBUG
     std::cout << "DEBUG/DEV VERSION!" << std::endl;
 
+    std::cout << "timestamp + remainder: " << timestamp.str() << ' ' << remainder.str() << std::endl;
     std::cout << "timestamp + remainder: " << timestamp.str() << remainder.str() << std::endl;
 
     remainder.str("");

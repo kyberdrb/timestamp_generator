@@ -35,5 +35,5 @@ private:
     bool _nopadding;
     uint16_t _paddingSize;
 
-    void setPaddingSizeForPrecision();
+    void setRemainderPaddingSizeForPrecision();
 };
