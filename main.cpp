@@ -37,13 +37,13 @@ void parseCommandLineArgumentsCPPstyle(int argc, char**& argv) {
     if (args.find("p") != args.end() || args.find("precision") != args.end()) {
         std::string precision = args.find("p") != args.end() ? args["p"] : args["precision"];
 #ifdef _DEBUG
-        std::cout << "precision: " << precision << std::endl;
+        std::cout << "main: precision: " << precision << std::endl;
 #endif
     }
 
     if (args.find("d") != args.end() || args.find("nopadding") != args.end()) {
 #ifdef _DEBUG
-        std::cout << "nopadding: padding disabled" << std::endl;
+        std::cout << "main: nopadding: padding disabled" << std::endl;
 #endif
     }
 }
@@ -65,14 +65,14 @@ std::unique_ptr<Options> parseCommandLineArgumentsCPPstyleToOptions(int argc, ch
     if (args.find("p") != args.end() || args.find("precision") != args.end()) {
         std::string precision = args.find("p") != args.end() ? args["p"] : args["precision"];
 #ifdef _DEBUG
-        std::cout << "precision: " << precision << std::endl;
+        std::cout << "parse: precision: " << precision << std::endl;
 #endif
         options->setPrecision(std::move(precision));
     }
 
     if (args.find("d") != args.end() || args.find("nopadding") != args.end()) {
 #ifdef _DEBUG
-        std::cout << "nopadding: padding disabled" << std::endl;
+        std::cout << "parse: nopadding: padding disabled" << std::endl;
 #endif
         options->disablePadding();
     }

@@ -5,9 +5,44 @@
 #include "Options.h"
 
 Options::Options() :
-    _precision(Precision::NANOSECONDS),
-    _nopadding(false)
-{}
+        _precision(Precision::MICROSECONDS),
+//        _precision(Precision::NANOSECONDS),
+        _nopadding(false)
+{
+    this->setPaddingSizeForPrecision();
+}
+
+void Options::setPaddingSizeForPrecision() {
+    switch (this->_precision) {
+        case YEAR:
+            this->_paddingSize = 0;
+            break;
+        case MONTH:
+            this->_paddingSize = 0;
+            break;
+        case DAY:
+            this->_paddingSize = 0;
+            break;
+        case HOUR:
+            this->_paddingSize = 0;
+            break;
+        case MINUTE:
+            this->_paddingSize = 0;
+            break;
+        case SECOND:
+            this->_paddingSize = 0;
+            break;
+        case MILLISECOND:
+            this->_paddingSize = 3;
+            break;
+        case MICROSECONDS:
+            this->_paddingSize = 6;
+            break;
+        case NANOSECONDS:
+            this->_paddingSize = 9;
+            break;
+    }
+}
 
 void Options::setPrecision(std::string precision) {
     if ("year" == precision) {
@@ -57,4 +92,8 @@ bool Options::isPaddingEnabled() const {
 
 Options::Precision Options::getPrecision() const {
     return this->_precision;
+}
+
+uint16_t Options::getPaddingSize() const {
+    return this->_paddingSize;
 }

@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 class Options {
@@ -27,8 +28,12 @@ public:
 
     Precision getPrecision() const;
     bool isPaddingEnabled() const;
+    uint16_t getPaddingSize() const;
 
 private:
     Precision _precision;
     bool _nopadding;
+    uint16_t _paddingSize;
+
+    void setPaddingSizeForPrecision();
 };

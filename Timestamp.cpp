@@ -25,7 +25,7 @@ std::string Timestamp::generate(Options const & options) {
     std::stringstream timestamp;
     timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
 #ifdef _DEBUG
-    std::cout << timestamp.str() << std::endl;
+    std::cout << "timestamp: " << timestamp.str() << std::endl;
 #endif
 
     auto timeSinceEpoch = currentTime.time_since_epoch();
@@ -34,8 +34,26 @@ std::string Timestamp::generate(Options const & options) {
 #endif
 
     // TODO change precision by the 'options' parameter
+    /*
+    if (Options::Precision::MILLISECOND == options.getPrecision() ) {
+        durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
+    }
+
+    if (Options::Precision::MICROSECONDS == options.getPrecision() ) {
+        durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
+    }
+
+    if (Options::Precision::MILLISECOND == options.getPrecision() ) {
+        durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
+    }*/
+
     auto durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::nanoseconds>(timeSinceEpoch);
-    switch (options.getPrecision()) {
+
+#ifdef _DEBUG
+    std::cout << "options.getPrecision(): " << options.getPrecision() << std::endl;
+#endif
+
+    switch (options.getPrecision() ) {
         case Options::MILLISECOND:
             durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
             break;
@@ -49,31 +67,24 @@ std::string Timestamp::generate(Options const & options) {
 //            durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::microseconds>(timeSinceEpoch);
     }
 
-    if (Options::Precision::MILLISECOND == options.getPrecision() ) {
-        durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
-    }
-
-    if (Options::Precision::MICROSECONDS == options.getPrecision() ) {
-        durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
-    }
-
-    if (Options::Precision::MILLISECOND == options.getPrecision() ) {
-        durationSinceEpochInGivenPrecision = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
-    }
+#ifdef _DEBUG
+    std::cout << "durationSinceEpochInGivenPrecision: " << durationSinceEpochInGivenPrecision.count() << std::endl;
+#endif
 
     auto microsecondsSinceEpoch = std::chrono::duration_cast<std::chrono::microseconds>(timeSinceEpoch);
 #ifdef _DEBUG
-    std::cout << microsecondsSinceEpoch.count() << std::endl;
+    std::cout << "microsecondsSinceEpoch: " << microsecondsSinceEpoch.count() << std::endl;
 #endif
 
     auto secondsSinceEpoch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
 #ifdef _DEBUG
-    std::cout << secondsSinceEpoch.count() << std::endl;
+    std::cout << "secondsSinceEpoch: " << secondsSinceEpoch.count() << std::endl;
 #endif
 
     auto tailTime /*chvostikovy cas*/ = microsecondsSinceEpoch - secondsSinceEpoch;
+//    auto tailTime /*chvostikovy cas*/ = durationSinceEpochInGivenPrecision - secondsSinceEpoch;
 #ifdef _DEBUG
-    std::cout << tailTime.count() << std::endl;
+    std::cout << "tailTime: " << tailTime.count() << std::endl;
 #endif
 
     std::stringstream remainder;
@@ -87,6 +98,10 @@ std::string Timestamp::generate(Options const & options) {
     //  - milliseconds -> 3 chars width
     //  - microseconds -> 6 chars width
     //  -  nanoseconds -> 9 chars width
+#ifdef _DEBUG
+    std::cout << "options.getPaddingSize(): " << options.getPaddingSize() << std::endl;
+#endif
+
     if (options.isPaddingEnabled() ) {
         remainder << std::setw(6) << std::setfill('0');
     }
@@ -94,6 +109,8 @@ std::string Timestamp::generate(Options const & options) {
 
 #ifdef _DEBUG
     std::cout << "DEBUG/DEV VERSION!" << std::endl;
+
+    std::cout << "timestamp + remainder: " << timestamp.str() << remainder.str() << std::endl;
 
     remainder.str("");
     remainder.clear();
