@@ -50,7 +50,7 @@ void Options::setPrecision(std::string precision) {
     }
 
     if ("month" == precision) {
-        this->_precision = Precision::MICROSECONDS;
+        this->_precision = Precision::MONTH;
         return;
     }
 

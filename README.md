@@ -91,6 +91,45 @@ MSBuild version 17.10.4+10fbfbf2e for .NET Framework
 "${PROJECT_DIR}/cmake-build-release/Debug/timestamp_generator.exe"
 ```
 
+CLion clean commands in terminal
+
+```
+/usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-debug --target clean -j $(nproc) --verbose
+
+/usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-release --target clean -j $(nproc)  --verbose
+```
+
+CLion makefile generation (with Ninja) commands in terminal
+
+```
+/usr/bin/cmake \
+-DCMAKE_BUILD_TYPE=Debug \
+-DCMAKE_MAKE_PROGRAM=/usr/bin/ninja \
+-DCMAKE_C_COMPILER=/usr/bin/gcc \
+-DCMAKE_CXX_COMPILER=/usr/bin/g++ \
+-G Ninja \
+-S /home/laptop/git/kyberdrb/timestamp_generator \
+-B /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-debug
+
+/usr/bin/cmake \
+-DCMAKE_BUILD_TYPE=Release \
+-DCMAKE_MAKE_PROGRAM=/usr/bin/ninja \
+-DCMAKE_C_COMPILER=/usr/bin/gcc \
+-DCMAKE_CXX_COMPILER=/usr/bin/g++ \
+-G Ninja \
+-S /home/laptop/git/kyberdrb/timestamp_generator \
+-B /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-release
+```
+
+CLion build commands in terminal
+
+```
+/usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-debug --target timestamp_generator -j $(nproc) --config Debug --verbose
+
+/usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-release --target timestamp_generator -j $(nproc) --config Release --verbose
+```
+
+
 ## `man` page
 ```
 NAME
