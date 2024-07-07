@@ -46,50 +46,41 @@ void Options::setRemainderPaddingSizeForPrecision() {
 void Options::setPrecision(std::string precision) {
     if ("year" == precision) {
         this->_precision = Precision::YEAR;
-        return;
     }
 
     if ("month" == precision) {
         this->_precision = Precision::MONTH;
-        return;
     }
 
     if ("day" == precision) {
         this->_precision = Precision::DAY;
-        return;
     }
 
     if ("hour" == precision) {
         this->_precision = Precision::HOUR;
-        return;
     }
 
     if ("minute" == precision) {
         this->_precision = Precision::MINUTE;
-        return;
     }
 
     if ("second" == precision) {
         this->_precision = Precision::SECOND;
-        return;
     }
 
     if ("millisecond" == precision) {
         this->_precision = Precision::MILLISECOND;
-        return;
     }
 
     if ("microsecond" == precision) {
         this->_precision = Precision::MICROSECONDS;
-        return;
     }
 
     if ("nanosecond" == precision) {
         this->_precision = Precision::NANOSECONDS;
-        return;
     }
 
-    this->_precision = Precision::MICROSECONDS;
+    this->setRemainderPaddingSizeForPrecision();
 }
 
 void Options::disablePadding() {

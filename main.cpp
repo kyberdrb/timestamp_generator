@@ -6,16 +6,11 @@
 #include <memory>
 #include <unordered_map>
 
-void parseCommandLineArgumentsCPPstyle(int argc, char**& argv);
 std::unique_ptr<Options> parseCommandLineArgumentsCPPstyleToOptions(int argc, char**& argv);
 // Function to parse command-line arguments
 std::unordered_map<std::string, std::string> parseCommandLineArguments(int argc, char* argv[], const std::unordered_map<std::string, bool>& optionsWithValues);
 
 int main(int argc, char *argv[]) {
-    parseCommandLineArgumentsCPPstyle(argc, argv);
-//    std::cout << Timestamp::generate() << std::endl;
-
-//    std::cout << Timestamp::generate(precision, disable_padding = false) << std::endl;
 
     std::unique_ptr<Options> options = parseCommandLineArgumentsCPPstyleToOptions(argc, argv);
     std::cout << Timestamp::generate(*options) << std::endl;
@@ -81,6 +76,7 @@ std::unique_ptr<Options> parseCommandLineArgumentsCPPstyleToOptions(int argc, ch
 }
 
 // Function to parse command-line arguments
+//  Essentially 'getopt' coded by hand
 std::unordered_map<std::string, std::string> parseCommandLineArguments(int argc, char* argv[], const std::unordered_map<std::string, bool>& optionsWithValues) {
     std::unordered_map<std::string, std::string> arguments;
 

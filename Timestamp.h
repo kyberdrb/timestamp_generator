@@ -15,4 +15,7 @@ class Timestamp {
 
     private:
         static std::mutex idGeneratorMutex;
+
+        template <typename Time1, typename Time2>
+        static std::string assembleTimestamp(std::stringstream& timestamp, Time1 morePreciseTime, Time2 lessOrEquallyPreciseTime, Options const & options);
 };
