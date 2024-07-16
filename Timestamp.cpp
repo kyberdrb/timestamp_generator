@@ -24,32 +24,32 @@ std::string Timestamp::generate(Options const & options) {
     auto currentLocalCalendarTime = std::localtime(&currentCalendarTime);
     std::stringstream timestamp;
 
-    if (Options::Precision::YEAR == options.getPrecision() ) {
+    if (Options::Precision::YEARS == options.getPrecision() ) {
         timestamp << std::put_time(currentLocalCalendarTime, "%Y");
         return timestamp.str();
     }
 
-    if (Options::Precision::MONTH == options.getPrecision() ) {
+    if (Options::Precision::MONTHS == options.getPrecision() ) {
         timestamp << std::put_time(currentLocalCalendarTime, "%Y%m");
         return timestamp.str();
     }
 
-    if (Options::Precision::DAY == options.getPrecision() ) {
+    if (Options::Precision::DAYS == options.getPrecision() ) {
         timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d");
         return timestamp.str();
     }
 
-    if (Options::Precision::HOUR == options.getPrecision() ) {
+    if (Options::Precision::HOURS == options.getPrecision() ) {
         timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H");
         return timestamp.str();
     }
 
-    if (Options::Precision::MINUTE == options.getPrecision() ) {
+    if (Options::Precision::MINUTES == options.getPrecision() ) {
         timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M");
         return timestamp.str();
     }
 
-    if (Options::Precision::SECOND == options.getPrecision() ) {
+    if (Options::Precision::SECONDS == options.getPrecision() ) {
         timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
         return timestamp.str();
     }
@@ -72,7 +72,7 @@ std::string Timestamp::generate(Options const & options) {
 #endif
 
     switch (options.getPrecision() ) {
-        case Options::MILLISECOND: {
+        case Options::MILLISECONDS: {
             auto durationSinceEpochInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
             return assembleTimestamp(timestamp, durationSinceEpochInMilliseconds, secondsSinceEpochForSwitch, options);
         }

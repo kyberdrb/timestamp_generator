@@ -13,25 +13,25 @@ Options::Options() :
 
 void Options::setRemainderPaddingSizeForPrecision() {
     switch (this->_precision) {
-        case YEAR:
+        case YEARS:
             this->_paddingSize = 0;
             break;
-        case MONTH:
+        case MONTHS:
             this->_paddingSize = 0;
             break;
-        case DAY:
+        case DAYS:
             this->_paddingSize = 0;
             break;
-        case HOUR:
+        case HOURS:
             this->_paddingSize = 0;
             break;
-        case MINUTE:
+        case MINUTES:
             this->_paddingSize = 0;
             break;
-        case SECOND:
+        case SECONDS:
             this->_paddingSize = 0;
             break;
-        case MILLISECOND:
+        case MILLISECONDS:
             this->_paddingSize = 3;
             break;
         case MICROSECONDS:
@@ -44,39 +44,39 @@ void Options::setRemainderPaddingSizeForPrecision() {
 }
 
 void Options::setPrecision(std::string precision) {
-    if ("year" == precision) {
-        this->_precision = Precision::YEAR;
+    if ("years" == precision) {
+        this->_precision = Precision::YEARS;
     }
 
-    if ("month" == precision) {
-        this->_precision = Precision::MONTH;
+    if ("months" == precision) {
+        this->_precision = Precision::MONTHS;
     }
 
-    if ("day" == precision) {
-        this->_precision = Precision::DAY;
+    if ("days" == precision) {
+        this->_precision = Precision::DAYS;
     }
 
-    if ("hour" == precision) {
-        this->_precision = Precision::HOUR;
+    if ("hours" == precision) {
+        this->_precision = Precision::HOURS;
     }
 
-    if ("minute" == precision) {
-        this->_precision = Precision::MINUTE;
+    if ("minutes" == precision) {
+        this->_precision = Precision::MINUTES;
     }
 
-    if ("second" == precision) {
-        this->_precision = Precision::SECOND;
+    if ("seconds" == precision) {
+        this->_precision = Precision::SECONDS;
     }
 
-    if ("millisecond" == precision) {
-        this->_precision = Precision::MILLISECOND;
+    if ("milliseconds" == precision) {
+        this->_precision = Precision::MILLISECONDS;
     }
 
-    if ("microsecond" == precision) {
+    if ("microseconds" == precision) {
         this->_precision = Precision::MICROSECONDS;
     }
 
-    if ("nanosecond" == precision) {
+    if ("nanoseconds" == precision) {
         this->_precision = Precision::NANOSECONDS;
     }
 

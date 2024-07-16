@@ -12,13 +12,13 @@ public:
     Options();
 
     enum Precision {
-        YEAR,
-        MONTH,
-        DAY,
-        HOUR,
-        MINUTE,
-        SECOND,
-        MILLISECOND,
+        YEARS,
+        MONTHS,
+        DAYS,
+        HOURS,
+        MINUTES,
+        SECONDS,
+        MILLISECONDS,
         MICROSECONDS,
         NANOSECONDS
     };
