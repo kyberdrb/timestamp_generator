@@ -16,20 +16,6 @@ Release
 
 PROJECT_DIR="$(pwd)"
 echo $PROJECT_DIR
-BUILD_DIR_DEBUG="${PROJECT_DIR}/cmake-build-debug"
-cmake --build  "${BUILD_DIR_DEBUG}" --target clean
-BIN_DIR_DEBUG="${BUILD_DIR_DEBUG}/Debug"
-ls -l "${BIN_DIR_DEBUG}/timestamp_generator.exe"
-cmake -DCMAKE_BUILD_TYPE=Debug -S "${PROJECT_DIR}" -B "${BUILD_DIR_DEBUG}"
-PROJECT_NAME="${PROJECT_DIR##*/}"
-echo ${PROJECT_NAME}
-cmake --build  "${BUILD_DIR_DEBUG}" --target "${PROJECT_NAME}" --config Debug --parallel $(nproc)
-"${BIN_DIR_DEBUG}/timestamp_generator.exe" --precision seconds
-
-# Target: debug
-
-PROJECT_DIR="$(pwd)"
-echo $PROJECT_DIR
 BUILD_DIR_RELEASE="${PROJECT_DIR}/cmake-build-release"
 cmake --build  "${BUILD_DIR_RELEASE}" --target clean
 BIN_DIR_RELEASE="${BUILD_DIR_RELEASE}/Release"
@@ -39,6 +25,20 @@ PROJECT_NAME="${PROJECT_DIR##*/}"
 echo ${PROJECT_NAME}
 cmake --build  "${BUILD_DIR_RELEASE}" --target "${PROJECT_NAME}" --config Release --parallel $(nproc)
 "${BIN_DIR_RELEASE}/timestamp_generator.exe" --precision seconds
+
+# Target: debug
+
+PROJECT_DIR="$(pwd)"
+echo $PROJECT_DIR
+BUILD_DIR_DEBUG="${PROJECT_DIR}/cmake-build-debug"
+cmake --build  "${BUILD_DIR_DEBUG}" --target clean
+BIN_DIR_DEBUG="${BUILD_DIR_DEBUG}/Debug"
+ls -l "${BIN_DIR_DEBUG}/timestamp_generator.exe"
+cmake -DCMAKE_BUILD_TYPE=Debug -S "${PROJECT_DIR}" -B "${BUILD_DIR_DEBUG}"
+PROJECT_NAME="${PROJECT_DIR##*/}"
+echo ${PROJECT_NAME}
+cmake --build  "${BUILD_DIR_DEBUG}" --target "${PROJECT_NAME}" --config Debug --parallel $(nproc)
+"${BIN_DIR_DEBUG}/timestamp_generator.exe" --precision seconds
 
 # Target: all
 
