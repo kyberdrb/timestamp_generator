@@ -11,7 +11,6 @@ std::unique_ptr<Options> parseCommandLineArgumentsCPPstyleToOptions(int argc, ch
 std::unordered_map<std::string, std::string> parseCommandLineArguments(int argc, char* argv[], const std::unordered_map<std::string, bool>& optionsWithValues);
 
 int main(int argc, char *argv[]) {
-
     std::unique_ptr<Options> options = parseCommandLineArgumentsCPPstyleToOptions(argc, argv); // TODO introduce another function which will use 'getopt()' instead of custom parsing - maybe introduction of polymorphic function?
     std::cout << Timestamp::generate(*options) << std::endl;
     return 0;

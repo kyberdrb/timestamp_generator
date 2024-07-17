@@ -7,7 +7,68 @@ Utility to generate a timestamp from current time
 On Linux platform open any terminal emulator.  
 On Windows platform open Git Bash or equivalent LINUX/UNIX like terminal emulator.
 
-Below are provided exmple instructions
+Below are provided instructions to build release, debug and all/both versions:
+
+Release
+
+```sh
+# Target: release
+
+PROJECT_DIR="$(pwd)"
+echo $PROJECT_DIR
+BUILD_DIR_DEBUG="${PROJECT_DIR}/cmake-build-debug"
+cmake --build  "${BUILD_DIR_DEBUG}" --target clean
+BIN_DIR_DEBUG="${BUILD_DIR_DEBUG}/Debug
+ls -l "${BIN_DIR_DEBUG}/timestamp_generator.exe"
+cmake -DCMAKE_BUILD_TYPE=Debug -S "${PROJECT_DIR}" -B "${BUILD_DIR_DEBUG}"
+PROJECT_NAME="${PROJECT_DIR##*/}"
+echo ${PROJECT_NAME}
+cmake --build  "${BUILD_DIR_DEBUG}" --target "${PROJECT_NAME}" --config Debug --parallel $(nproc)
+"${BIN_DIR_DEBUG}/timestamp_generator.exe" --precision seconds
+
+# Target: debug
+
+PROJECT_DIR="$(pwd)"
+echo $PROJECT_DIR
+BUILD_DIR_RELEASE="${PROJECT_DIR}/cmake-build-release"
+cmake --build  "${BUILD_DIR_RELEASE}" --target clean
+BIN_DIR_RELEASE="${BUILD_DIR_RELEASE}/Release
+ls -l "${BIN_DIR_RELEASE}/timestamp_generator.exe"
+cmake -DCMAKE_BUILD_TYPE=Release -S "${PROJECT_DIR}" -B "${BUILD_DIR_RELEASE}"
+PROJECT_NAME="${PROJECT_DIR##*/}"
+echo ${PROJECT_NAME}
+cmake --build  "${BUILD_DIR_RELEASE}" --target "${PROJECT_NAME}" --config Release --parallel $(nproc)
+"${BIN_DIR_RELEASE}/timestamp_generator.exe" --precision seconds
+
+# Target: all
+
+PROJECT_DIR="$(pwd)"
+echo $PROJECT_DIR
+BUILD_DIR_RELEASE="${PROJECT_DIR}/cmake-build-release"
+BUILD_DIR_DEBUG="${PROJECT_DIR}/cmake-build-debug"
+
+cmake --build  "${BUILD_DIR_RELEASE}" --target clean
+cmake --build  "${BUILD_DIR_DEBUG}" --target clean
+
+BIN_DIR_RELEASE="${BUILD_DIR_RELEASE}/Release
+ls -l "${BIN_DIR_RELEASE}/timestamp_generator.exe"
+BIN_DIR_DEBUG="${BUILD_DIR_DEBUG}/Debug
+ls -l "${BIN_DIR_DEBUG}/timestamp_generator.exe"
+
+cmake -DCMAKE_BUILD_TYPE=Release -S "${PROJECT_DIR}" -B "${BUILD_DIR_RELEASE}"
+cmake -DCMAKE_BUILD_TYPE=Debug -S "${PROJECT_DIR}" -B "${BUILD_DIR_DEBUG}"
+
+PROJECT_NAME="${PROJECT_DIR##*/}"
+echo ${PROJECT_NAME}
+
+cmake --build  "${BUILD_DIR_RELEASE}" --target "${PROJECT_NAME}" --config Release --parallel $(nproc)
+cmake --build  "${BUILD_DIR_DEBUG}" --target "${PROJECT_NAME}" --config Debug --parallel $(nproc)
+
+"${BIN_DIR_RELEASE}/timestamp_generator.exe" --precision seconds
+"${BIN_DIR_DEBUG}/timestamp_generator.exe" --precision seconds
+```
+
+Below are provided exmple instructions with commands' output:
 
 ```
 PROJECT_DIR="$(pwd)"
