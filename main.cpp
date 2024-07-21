@@ -6,53 +6,28 @@
 #include <memory>
 #include <unordered_map>
 
-std::unique_ptr<Options> parseCommandLineArgumentsCPPstyleToOptions(int argc, char**& argv);
+std::unique_ptr<Options> parseCommandLineArgumentsInCustomCPPstyleToOptions(int argc, char**& argv);
 // Function to parse command-line arguments
 std::unordered_map<std::string, std::string> parseCommandLineArguments(int argc, char* argv[], const std::unordered_map<std::string, bool>& optionsWithValues);
+std::unique_ptr<Options> parseCommandLineArgumentsInCstyleWithGetOptToOptions(int argc, char**& argv);
 
 int main(int argc, char *argv[]) {
-    std::unique_ptr<Options> options = parseCommandLineArgumentsCPPstyleToOptions(argc, argv); // TODO introduce another function which will use 'getopt()' instead of custom parsing - maybe introduction of polymorphic function?
+    std::unique_ptr<Options> options = parseCommandLineArgumentsInCustomCPPstyleToOptions(argc, argv); // TODO introduce another function which will use 'getopt()' instead of custom parsing - maybe introduction of polymorphic function?
     std::cout << Timestamp::generate(*options) << std::endl;
     return 0;
 }
 
-void parseCommandLineArgumentsCPPstyle(int argc, char**& argv) {
-    // Define options and whether they expect a value
-    std::unordered_map<std::string, bool> optionsWithValues = {
-            {"p", true},
-            {"precision", true},
-            {"d", false},
-            {"nopadding", false}
-    };
-
-    auto args = parseCommandLineArguments(argc, argv, optionsWithValues);
-
-    // Example usage of parsed arguments
-    if (args.find("p") != args.end() || args.find("precision") != args.end()) {
-        std::string precision = args.find("p") != args.end() ? args["p"] : args["precision"];
-#ifdef _DEBUG
-        std::cout << "main: precision: " << precision << std::endl;
-#endif
-    }
-
-    if (args.find("d") != args.end() || args.find("nopadding") != args.end()) {
-#ifdef _DEBUG
-        std::cout << "main: nopadding: padding disabled" << std::endl;
-#endif
-    }
-}
-
-std::unique_ptr<Options> parseCommandLineArgumentsCPPstyleToOptions(int argc, char**& argv) {
+std::unique_ptr<Options> parseCommandLineArgumentsInCustomCPPstyleToOptions(int argc, char**& argv) {
     // Define options and whether they expect a value
     std::unordered_map<std::string, bool> commandLineoptionsWithValueDefinitionRequirement = {
             {"p", true},
             {"precision", true},
             {"d", false},
             {"nopadding", false}
+            // TODO add option [-f|--format] which will be forwarded to the Timestamp class' 'generate' function
     };
 
     auto args = parseCommandLineArguments(argc, argv, commandLineoptionsWithValueDefinitionRequirement);
-
     auto options = std::make_unique<Options>();
 
     // Example usage of parsed arguments
@@ -82,6 +57,11 @@ std::unordered_map<std::string, std::string> parseCommandLineArguments(int argc,
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
 
+        // TODO extend the custom parser to handle non-option command line arguments?
+//        if (arg == "--") {
+//            std::cout << "option terminator '--' detected - handling non-option command line arguments" << std::endl;
+//        }
+
         if (arg[0] == '-') {
             std::string key;
             std::string value;
@@ -108,4 +88,9 @@ std::unordered_map<std::string, std::string> parseCommandLineArguments(int argc,
     }
 
     return arguments;
+}
+
+std::unique_ptr<Options> parseCommandLineArgumentsInCstyleWithGetOptToOptions(int argc, char**& argv) {
+    auto options = std::make_unique<Options>();
+    return options;
 }
