@@ -68,19 +68,48 @@ std::string Timestamp::generate(Options const & options) {
     auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
 
 #ifdef _DEBUG
-    std::cout << "options.getPrecision(): " << options.getPrecision() << std::endl;
+    std::cout << "options.getPrecision(): ";
+    switch (options.getPrecision()) {
+        case Options::Precision::YEARS:
+            std::cout << "YEARS" << std::endl;
+            break;
+        case Options::Precision::MONTHS:
+            std::cout << "MONTHS" << std::endl;
+            break;
+        case Options::Precision::DAYS:
+            std::cout << "DAYS" << std::endl;
+            break;
+        case Options::Precision::HOURS:
+            std::cout << "HOURS" << std::endl;
+            break;
+        case Options::Precision::MINUTES:
+            std::cout << "MINUTES" << std::endl;
+            break;
+        case Options::Precision::SECONDS:
+            std::cout << "SECONDS" << std::endl;
+            break;
+        case Options::Precision::MILLISECONDS:
+            std::cout << "MILLISECONDS" << std::endl;
+            break;
+        case Options::Precision::MICROSECONDS:
+            std::cout << "MICROSECONDS" << std::endl;
+            break;
+        case Options::Precision::NANOSECONDS:
+            std::cout << "NANOSECONDS" << std::endl;
+            break;
+    }
 #endif
 
     switch (options.getPrecision() ) {
-        case Options::MILLISECONDS: {
+        case Options::Precision::MILLISECONDS: {
             auto durationSinceEpochInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
             return assembleTimestamp(timestamp, durationSinceEpochInMilliseconds, secondsSinceEpochForSwitch, options);
         }
-        case Options::MICROSECONDS: {
+        case Options::Precision::MICROSECONDS: {
             auto durationSinceEpochInMicroseconds = std::chrono::duration_cast<std::chrono::microseconds >(timeSinceEpoch);
             return assembleTimestamp(timestamp, durationSinceEpochInMicroseconds, secondsSinceEpochForSwitch, options);
         }
-        case Options::NANOSECONDS: {
+        case Options::Precision::NANOSECONDS: {
             auto durationSinceEpochInNanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(timeSinceEpoch);
             return assembleTimestamp(timestamp, durationSinceEpochInNanoseconds, secondsSinceEpochForSwitch, options);
         }

@@ -13,31 +13,31 @@ Options::Options() :
 
 void Options::setRemainderPaddingSizeForPrecision() {
     switch (this->_precision) {
-        case YEARS:
+        case Precision::YEARS:
             this->_paddingSize = 0;
             break;
-        case MONTHS:
+        case Precision::MONTHS:
             this->_paddingSize = 0;
             break;
-        case DAYS:
+        case Precision::DAYS:
             this->_paddingSize = 0;
             break;
-        case HOURS:
+        case Precision::HOURS:
             this->_paddingSize = 0;
             break;
-        case MINUTES:
+        case Precision::MINUTES:
             this->_paddingSize = 0;
             break;
-        case SECONDS:
+        case Precision::SECONDS:
             this->_paddingSize = 0;
             break;
-        case MILLISECONDS:
+        case Precision::MILLISECONDS:
             this->_paddingSize = 3;
             break;
-        case MICROSECONDS:
+        case Precision::MICROSECONDS:
             this->_paddingSize = 6;
             break;
-        case NANOSECONDS:
+        case Precision::NANOSECONDS:
             this->_paddingSize = 9;
             break;
     }

@@ -11,7 +11,7 @@ class Options {
 public:
     Options();
 
-    enum Precision {
+    enum class Precision {
         YEARS,
         MONTHS,
         DAYS,
