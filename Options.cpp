@@ -4,9 +4,13 @@
 
 #include "Options.h"
 
+#include <algorithm>
+#include <cctype>
+
 Options::Options() :
         _precision(Precision::MICROSECONDS),
-        _nopadding(false)
+        _nopadding(false),
+        _paddingSize(0)
 {
     this->setRemainderPaddingSizeForPrecision();
 }
@@ -44,6 +48,14 @@ void Options::setRemainderPaddingSizeForPrecision() {
 }
 
 void Options::setPrecision(std::string precision) {
+    std::transform(
+            precision.begin(),
+            precision.end(),
+            precision.begin(),
+            [](unsigned char character) {
+                return std::tolower(character);
+            });
+
     if ("years" == precision) {
         this->_precision = Precision::YEARS;
     }
@@ -85,6 +97,7 @@ void Options::setPrecision(std::string precision) {
 
 void Options::disablePadding() {
     this->_nopadding = true;
+    this->_paddingSize = 0;
 }
 
 bool Options::isPaddingEnabled() const {

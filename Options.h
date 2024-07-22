@@ -23,7 +23,7 @@ public:
         NANOSECONDS
     };
 
-    void setPrecision(std::string precision);
+    void setPrecision(std::string character);
     void disablePadding();
 
     Precision getPrecision() const;

@@ -115,10 +115,6 @@ std::string Timestamp::generate(Options const & options) {
         }
     }
 
-//#ifdef _DEBUG
-//    std::cout << "durationSinceEpochInGivenPrecision: " << durationSinceEpochInGivenPrecision.count() << std::endl;
-//#endif
-
     auto microsecondsSinceEpoch = std::chrono::duration_cast<std::chrono::microseconds>(timeSinceEpoch);
 #ifdef _DEBUG
     std::cout << "microsecondsSinceEpoch: " << microsecondsSinceEpoch.count() << std::endl;
@@ -130,14 +126,13 @@ std::string Timestamp::generate(Options const & options) {
 #endif
 
     auto tailTime /*chvostikovy cas*/ = microsecondsSinceEpoch - secondsSinceEpoch;
-//    auto tailTime /*chvostikovy cas*/ = durationSinceEpochInGivenPrecision - secondsSinceEpoch;
 #ifdef _DEBUG
     std::cout << "tailTime: " << tailTime.count() << std::endl;
 #endif
 
     std::stringstream remainder;
 
-    // Create padding
+    // Create padding - Test Cases
     //   align the time difference to 6 (six) digits = milliseconds precision (3 digits) + microseconds precision (3 digits)
     //   because milli-, micro- and nanoseconds have each 3 digits precision
     //   thus when the precision is set to microseconds, the number of tail time digits is cumulative
@@ -195,8 +190,8 @@ std::string Timestamp::generate(Options const & options) {
 }
 
 template <typename Time1, typename Time2>
-std::string Timestamp::assembleTimestamp(std::stringstream& timestamp, Time1 morePreciseTime, Time2 lessOrEquallyPreciseTime, Options const & options) {
-    auto tailTime /*chvostikovy cas*/ = morePreciseTime - lessOrEquallyPreciseTime;
+std::string Timestamp::assembleTimestamp(std::stringstream& timestamp, Time1 timeInGivenPrecision, Time2 timeInLowerOrEqualPrecision, Options const & options) {
+    auto tailTime /*chvostikovy cas*/ = timeInGivenPrecision - timeInLowerOrEqualPrecision;
 #ifdef _DEBUG
     std::cout << "tailTime: " << tailTime.count() << std::endl;
 #endif
@@ -204,10 +199,10 @@ std::string Timestamp::assembleTimestamp(std::stringstream& timestamp, Time1 mor
 #ifdef _DEBUG
     std::cout << "options.isPaddingEnabled(): " << options.isPaddingEnabled() << std::endl;
 #endif
-    if (options.isPaddingEnabled()) {
 #ifdef _DEBUG
-        std::cout << "options.getPaddingSize(): " << options.getPaddingSize() << std::endl;
+    std::cout << "options.getPaddingSize(): " << options.getPaddingSize() << std::endl;
 #endif
+    if (options.isPaddingEnabled()) {
         remainder << std::setw(options.getPaddingSize() ) << std::setfill('0');
     }
     remainder << tailTime.count();
