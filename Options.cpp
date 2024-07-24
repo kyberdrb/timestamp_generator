@@ -8,7 +8,7 @@
 #include <cctype>
 
 Options::Options() :
-        _precision(Precision::MICROSECONDS),
+        _precision(Precision::SECONDS),
         _nopadding(false),
         _paddingSize(0)
 {

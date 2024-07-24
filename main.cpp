@@ -66,6 +66,7 @@ std::unordered_map<std::string, std::string> parseCommandLineArguments(int argc,
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
 
+        // TODO test options terminator "--" with each options parsing strategy
         if (arg == "--") {
 #ifdef _DEBUG
             std::cout << "option terminator '--' detected - handling non-option command line arguments" << std::endl;

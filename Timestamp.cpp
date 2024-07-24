@@ -24,6 +24,39 @@ std::string Timestamp::generate(Options const & options) {
     auto currentLocalCalendarTime = std::localtime(&currentCalendarTime);
     std::stringstream timestamp;
 
+#ifdef _DEBUG
+    std::cout << "options.getPrecision(): ";
+    switch (options.getPrecision()) {
+        case Options::Precision::YEARS:
+            std::cout << "YEARS" << std::endl;
+            break;
+        case Options::Precision::MONTHS:
+            std::cout << "MONTHS" << std::endl;
+            break;
+        case Options::Precision::DAYS:
+            std::cout << "DAYS" << std::endl;
+            break;
+        case Options::Precision::HOURS:
+            std::cout << "HOURS" << std::endl;
+            break;
+        case Options::Precision::MINUTES:
+            std::cout << "MINUTES" << std::endl;
+            break;
+        case Options::Precision::SECONDS:
+            std::cout << "SECONDS" << std::endl;
+            break;
+        case Options::Precision::MILLISECONDS:
+            std::cout << "MILLISECONDS" << std::endl;
+            break;
+        case Options::Precision::MICROSECONDS:
+            std::cout << "MICROSECONDS" << std::endl;
+            break;
+        case Options::Precision::NANOSECONDS:
+            std::cout << "NANOSECONDS" << std::endl;
+            break;
+    }
+#endif
+
     if (Options::Precision::YEARS == options.getPrecision() ) {
         timestamp << std::put_time(currentLocalCalendarTime, "%Y");
         return timestamp.str();
@@ -66,39 +99,6 @@ std::string Timestamp::generate(Options const & options) {
 #endif
 
     auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
-
-#ifdef _DEBUG
-    std::cout << "options.getPrecision(): ";
-    switch (options.getPrecision()) {
-        case Options::Precision::YEARS:
-            std::cout << "YEARS" << std::endl;
-            break;
-        case Options::Precision::MONTHS:
-            std::cout << "MONTHS" << std::endl;
-            break;
-        case Options::Precision::DAYS:
-            std::cout << "DAYS" << std::endl;
-            break;
-        case Options::Precision::HOURS:
-            std::cout << "HOURS" << std::endl;
-            break;
-        case Options::Precision::MINUTES:
-            std::cout << "MINUTES" << std::endl;
-            break;
-        case Options::Precision::SECONDS:
-            std::cout << "SECONDS" << std::endl;
-            break;
-        case Options::Precision::MILLISECONDS:
-            std::cout << "MILLISECONDS" << std::endl;
-            break;
-        case Options::Precision::MICROSECONDS:
-            std::cout << "MICROSECONDS" << std::endl;
-            break;
-        case Options::Precision::NANOSECONDS:
-            std::cout << "NANOSECONDS" << std::endl;
-            break;
-    }
-#endif
 
     switch (options.getPrecision() ) {
         case Options::Precision::MILLISECONDS: {
