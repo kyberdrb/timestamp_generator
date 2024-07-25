@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "Options.h"
-
 #include <mutex>
 #include <string>
+
+class Options;
 
 class Timestamp {
     public:

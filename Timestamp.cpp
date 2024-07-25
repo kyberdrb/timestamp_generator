@@ -4,6 +4,8 @@
 
 #include "Timestamp.h"
 
+#include "Options.h"
+
 #include <chrono>
 #include <iomanip>
 

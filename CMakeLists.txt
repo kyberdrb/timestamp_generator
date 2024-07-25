@@ -17,7 +17,12 @@ add_executable(timestamp_generator main.cpp
         Timestamp.cpp
         Timestamp.h
         Options.cpp
-        Options.h)
+        Options.h
+        OptionParserCrossPlatformStdOnly.cpp
+        OptionParserCrossPlatformStdOnly.h
+        OptionParserPosixOnlyViaGetopt.cpp
+        OptionParserPosixOnlyViaGetopt.h
+        CommandLineArgumentsOptionsParser.h)
 
 # Conditionally add _DEBUG definition for Debug builds
 target_compile_definitions(${PROJECT_NAME} PRIVATE
