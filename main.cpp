@@ -1,7 +1,7 @@
 #include "Timestamp.h"
 
 #include "CommandLineArgumentsOptionsParser.h"
-#ifdef _MSC_VER
+#ifndef _MSC_VER
     #include "OptionParserPosixOnlyViaGetopt.h"
 #endif
 #include "OptionParserCrossPlatformStdOnly.h"
@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     auto timestamp = Timestamp::generate(*optionsFromStdOnlyParser);
     std::cout << timestamp << std::endl;
 
-#ifdef _MSC_VER
+#ifndef _MSC_VER
     auto optionParserPosixOnlyViaGetopt = std::make_unique<OptionParserPosixOnlyViaGetopt>();
     auto optionsFromGetoptParser = optionParserPosixOnlyViaGetopt->parseCommandLineArgumentsInCstyleWithGetOptToOptions(argc, argv);
     // TODO same here
