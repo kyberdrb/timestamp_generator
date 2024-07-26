@@ -33,21 +33,21 @@ std::unique_ptr<Options> OptionParserCrossPlatformStdOnly::parseCommandLineArgum
     if (args.find("p") != args.end() || args.find("precision") != args.end()) {
         std::string precision = args.find("p") != args.end() ? args["p"] : args["precision"];
 #ifdef _DEBUG
-        std::cout << "parse: precision: " << precision << std::endl;
+        std::cout << "OptionParserCrossPlatformStdOnly: precision: " << precision << std::endl;
 #endif
         options->setPrecision(precision);
     }
 
     if (args.find("d") != args.end() || args.find("nopadding") != args.end()) {
 #ifdef _DEBUG
-        std::cout << "parse: nopadding: padding disabled" << std::endl;
+        std::cout << "OptionParserCrossPlatformStdOnly: nopadding: high precision remainder padding disabled" << std::endl;
 #endif
         options->disablePadding();
     }
 
     if (args.find("?") != args.end() || args.find("help") != args.end()) {
 #ifdef _DEBUG
-        std::cout << "help invoked" << std::endl;
+        std::cout << "OptionParserCrossPlatformStdOnly: help invoked" << std::endl;
 #endif
         this->print_usage(argv[0]);
     }
@@ -66,7 +66,7 @@ std::unordered_map<std::string, std::string> OptionParserCrossPlatformStdOnly::p
         // TODO test options terminator "--" with each options parsing strategy
         if (arg == "--") {
 #ifdef _DEBUG
-            std::cout << "option terminator '--' detected - handling non-option command line arguments" << std::endl;
+            std::cout << "OptionParserCrossPlatformStdOnly: option terminator '--' detected - handling non-option command line arguments" << std::endl;
             // skip handling of nonoption command line arguments
             break;
 #endif
@@ -89,7 +89,7 @@ std::unordered_map<std::string, std::string> OptionParserCrossPlatformStdOnly::p
                 if (i + 1 < argc && argv[i + 1][0] != '-') {
                     value = argv[++i];
                 } else {
-                    std::cerr << "Option '" << arg << "' requires a value" << std::endl;
+                    std::cerr << "OptionParserCrossPlatformStdOnly: Option '" << arg << "' requires a value" << std::endl;
                 }
             }
 
@@ -100,6 +100,7 @@ std::unordered_map<std::string, std::string> OptionParserCrossPlatformStdOnly::p
     return arguments;
 }
 
+// TODO encapsulate into separate class 'Help'
 void OptionParserCrossPlatformStdOnly::print_usage(const std::string& fullPathToBinaryAsString) const {
     std::filesystem::path fullPathToBinary{fullPathToBinaryAsString};
     std::cout << "Usage: " << fullPathToBinary.filename().string() << " [-p|--precision] PRECISION [-d|--nopadding]" << std::endl;

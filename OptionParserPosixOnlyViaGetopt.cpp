@@ -46,7 +46,7 @@ std::unique_ptr<Options> OptionParserPosixOnlyViaGetopt::parseCommandLineArgumen
             }
             case 'd':
 #ifdef _DEBUG
-                std::cout << "nopadding: padding disabled" << std::endl;
+                std::cout << "nopadding: high precision remainder padding disabled" << std::endl;
 #endif
                 options->disablePadding();
                 break;

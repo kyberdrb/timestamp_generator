@@ -10,8 +10,8 @@
 #include <iomanip>
 
 #ifdef _DEBUG
-#include <cassert>
-#include <iostream>
+    #include <cassert>
+    #include <iostream>
 #endif
 
 std::mutex Timestamp::idGeneratorMutex;
@@ -28,93 +28,111 @@ std::string Timestamp::generate(Options const & options) {
 
 #ifdef _DEBUG
     std::cout << "options.getPrecision(): ";
+#endif
     switch (options.getPrecision()) {
         case Options::Precision::YEARS:
+#ifdef _DEBUG
             std::cout << "YEARS" << std::endl;
-            break;
+#endif
+            timestamp << std::put_time(currentLocalCalendarTime, "%Y");
+            return timestamp.str();
         case Options::Precision::MONTHS:
+#ifdef _DEBUG
             std::cout << "MONTHS" << std::endl;
-            break;
+#endif
+            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m");
+            return timestamp.str();
         case Options::Precision::DAYS:
+#ifdef _DEBUG
             std::cout << "DAYS" << std::endl;
-            break;
+#endif
+            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d");
+            return timestamp.str();
         case Options::Precision::HOURS:
+#ifdef _DEBUG
             std::cout << "HOURS" << std::endl;
-            break;
+#endif
+            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H");
+            return timestamp.str();
         case Options::Precision::MINUTES:
+#ifdef _DEBUG
             std::cout << "MINUTES" << std::endl;
-            break;
+#endif
+            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M");
+            return timestamp.str();
         case Options::Precision::SECONDS:
+#ifdef _DEBUG
             std::cout << "SECONDS" << std::endl;
-            break;
-        case Options::Precision::MILLISECONDS:
-            std::cout << "MILLISECONDS" << std::endl;
-            break;
-        case Options::Precision::MICROSECONDS:
-            std::cout << "MICROSECONDS" << std::endl;
-            break;
-        case Options::Precision::NANOSECONDS:
-            std::cout << "NANOSECONDS" << std::endl;
-            break;
-    }
 #endif
-
-    if (Options::Precision::YEARS == options.getPrecision() ) {
-        timestamp << std::put_time(currentLocalCalendarTime, "%Y");
-        return timestamp.str();
-    }
-
-    if (Options::Precision::MONTHS == options.getPrecision() ) {
-        timestamp << std::put_time(currentLocalCalendarTime, "%Y%m");
-        return timestamp.str();
-    }
-
-    if (Options::Precision::DAYS == options.getPrecision() ) {
-        timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d");
-        return timestamp.str();
-    }
-
-    if (Options::Precision::HOURS == options.getPrecision() ) {
-        timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H");
-        return timestamp.str();
-    }
-
-    if (Options::Precision::MINUTES == options.getPrecision() ) {
-        timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M");
-        return timestamp.str();
-    }
-
-    if (Options::Precision::SECONDS == options.getPrecision() ) {
-        timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
-        return timestamp.str();
-    }
-
-    timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
-
-#ifdef _DEBUG
-    std::cout << "timestamp: " << timestamp.str() << std::endl;
-#endif
-
-    auto timeSinceEpoch = currentTime.time_since_epoch();
-#ifdef _DEBUG
-    assert(timeSinceEpoch.count() == currentTime.time_since_epoch().count());
-#endif
-
-    auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
-
-    switch (options.getPrecision() ) {
+            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
+            return timestamp.str();
         case Options::Precision::MILLISECONDS: {
+#ifdef _DEBUG
+            std::cout << "MILLISECONDS" << std::endl;
+#endif
+// TODO START encapsulate to separate function
+            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
+
+#ifdef _DEBUG
+            std::cout << "timestamp: " << timestamp.str() << std::endl;
+#endif
+
+            auto timeSinceEpoch = currentTime.time_since_epoch();
+#ifdef _DEBUG
+            assert(timeSinceEpoch.count() == currentTime.time_since_epoch().count());
+#endif
+
+            auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
+// TODO END encapsulate to separate function
+
             auto durationSinceEpochInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
             return assembleTimestamp(timestamp, durationSinceEpochInMilliseconds, secondsSinceEpochForSwitch, options);
         }
         case Options::Precision::MICROSECONDS: {
+#ifdef _DEBUG
+            std::cout << "MICROSECONDS" << std::endl;
+#endif
+            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
+
+#ifdef _DEBUG
+            std::cout << "timestamp: " << timestamp.str() << std::endl;
+#endif
+
+            auto timeSinceEpoch = currentTime.time_since_epoch();
+#ifdef _DEBUG
+            assert(timeSinceEpoch.count() == currentTime.time_since_epoch().count());
+#endif
+
+            auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
+
             auto durationSinceEpochInMicroseconds = std::chrono::duration_cast<std::chrono::microseconds >(timeSinceEpoch);
             return assembleTimestamp(timestamp, durationSinceEpochInMicroseconds, secondsSinceEpochForSwitch, options);
         }
         case Options::Precision::NANOSECONDS: {
+#ifdef _DEBUG
+            std::cout << "NANOSECONDS" << std::endl;
+#endif
+            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
+
+#ifdef _DEBUG
+            std::cout << "timestamp: " << timestamp.str() << std::endl;
+#endif
+
+            auto timeSinceEpoch = currentTime.time_since_epoch();
+#ifdef _DEBUG
+            assert(timeSinceEpoch.count() == currentTime.time_since_epoch().count());
+#endif
+
+            auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
+
             auto durationSinceEpochInNanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(timeSinceEpoch);
             return assembleTimestamp(timestamp, durationSinceEpochInNanoseconds, secondsSinceEpochForSwitch, options);
         }
+        default:
+#ifdef _DEBUG
+            std::cout << "Unknown precision" << std::endl;
+#endif
+            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
     }
 
     return timestamp.str();
