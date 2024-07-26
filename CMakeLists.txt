@@ -13,16 +13,31 @@ endif()
 #  is matching the CMake build files for desired configuration
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-add_executable(timestamp_generator main.cpp
+message(STATUS "Compiler type: ${CMAKE_CXX_COMPILER_ID}")
+
+# List common source files
+set(SOURCES
         Timestamp.cpp
-        Timestamp.h
         Options.cpp
-        Options.h
         OptionParserCrossPlatformStdOnly.cpp
+)
+
+# List common header files
+set(HEADERS
+        Timestamp.h
+        Options.h
         OptionParserCrossPlatformStdOnly.h
-        OptionParserPosixOnlyViaGetopt.cpp
-        OptionParserPosixOnlyViaGetopt.h
-        CommandLineArgumentsOptionsParser.h)
+        CommandLineArgumentsOptionsParser.h
+)
+
+# Conditionally add source and header files for non-MSVC compilers
+if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    message(STATUS "Skipping inclusion of 'OptionParserPosixOnlyViaGetopt' class - compatible with POSIX-conforming compilers only")
+    list(APPEND SOURCES OptionParserPosixOnlyViaGetopt.cpp)
+    list(APPEND HEADERS OptionParserPosixOnlyViaGetopt.h)
+endif()
+
+add_executable(timestamp_generator main.cpp ${SOURCES} ${HEADERS})
 
 # Conditionally add _DEBUG definition for Debug builds
 target_compile_definitions(${PROJECT_NAME} PRIVATE
