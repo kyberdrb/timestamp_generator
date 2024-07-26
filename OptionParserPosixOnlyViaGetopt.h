@@ -7,6 +7,7 @@
 #include "CommandLineArgumentsOptionsParser.h"
 
 #include <memory>
+#include <string>
 
 class Options;
 
