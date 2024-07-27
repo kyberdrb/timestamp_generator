@@ -66,33 +66,23 @@ std::string Timestamp::generate(Options const & options) {
 #endif
             timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
             return timestamp.str();
-        case Options::Precision::MILLISECONDS: {
+        case Options::Precision::MILLISECONDS:
 #ifdef _DEBUG
             std::cout << "MILLISECONDS" << std::endl;
 #endif
-            auto timeSinceEpoch = extractTimeSinceEpoch(timestamp, currentLocalCalendarTime, currentTime);
-            auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
-            auto durationSinceEpochInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
-            return assembleTimestamp(timestamp, durationSinceEpochInMilliseconds, secondsSinceEpochForSwitch, options);
-        }
-        case Options::Precision::MICROSECONDS: {
+            return handlePrecision<std::chrono::milliseconds>(timestamp, currentLocalCalendarTime, currentTime, options);
+
+        case Options::Precision::MICROSECONDS:
 #ifdef _DEBUG
             std::cout << "MICROSECONDS" << std::endl;
 #endif
-            auto timeSinceEpoch = extractTimeSinceEpoch(timestamp, currentLocalCalendarTime, currentTime);
-            auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
-            auto durationSinceEpochInMicroseconds = std::chrono::duration_cast<std::chrono::microseconds >(timeSinceEpoch);
-            return assembleTimestamp(timestamp, durationSinceEpochInMicroseconds, secondsSinceEpochForSwitch, options);
-        }
-        case Options::Precision::NANOSECONDS: {
+            return handlePrecision<std::chrono::microseconds>(timestamp, currentLocalCalendarTime, currentTime, options);
+
+        case Options::Precision::NANOSECONDS:
 #ifdef _DEBUG
             std::cout << "NANOSECONDS" << std::endl;
 #endif
-            auto timeSinceEpoch = extractTimeSinceEpoch(timestamp, currentLocalCalendarTime, currentTime);
-            auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
-            auto durationSinceEpochInNanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(timeSinceEpoch);
-            return assembleTimestamp(timestamp, durationSinceEpochInNanoseconds, secondsSinceEpochForSwitch, options);
-        }
+            return handlePrecision<std::chrono::nanoseconds>(timestamp, currentLocalCalendarTime, currentTime, options);
         default:
 #ifdef _DEBUG
             std::cout << "Unknown precision" << std::endl;
@@ -101,6 +91,14 @@ std::string Timestamp::generate(Options const & options) {
     }
 
     return timestamp.str();
+}
+
+template <typename Duration>
+std::string Timestamp::handlePrecision(std::stringstream& timestamp, tm*& currentLocalCalendarTime, const std::chrono::system_clock::time_point& currentTime, const Options& options) {
+    auto timeSinceEpoch = extractTimeSinceEpoch(timestamp, currentLocalCalendarTime, currentTime);
+    auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
+    auto durationSinceEpoch = std::chrono::duration_cast<Duration>(timeSinceEpoch);
+    return assembleTimestamp(timestamp, durationSinceEpoch, secondsSinceEpochForSwitch, options);
 }
 
 template <typename TimePoint>
@@ -158,3 +156,7 @@ std::string Timestamp::assembleTimestamp(std::stringstream& timestamp, Time1 tim
 
 // Explicit template instantiation
 template std::chrono::system_clock::duration Timestamp::extractTimeSinceEpoch<std::chrono::system_clock::time_point>(std::stringstream& timestamp, tm*& currentLocalCalendarTime, const std::chrono::system_clock::time_point& currentTime);
+
+template std::string Timestamp::handlePrecision<std::chrono::milliseconds>(std::stringstream&, tm*&, const std::chrono::system_clock::time_point&, const Options&);
+template std::string Timestamp::handlePrecision<std::chrono::microseconds>(std::stringstream&, tm*&, const std::chrono::system_clock::time_point&, const Options&);
+template std::string Timestamp::handlePrecision<std::chrono::nanoseconds>(std::stringstream&, tm*&, const std::chrono::system_clock::time_point&, const Options&);
