@@ -14,12 +14,12 @@
     #include <iostream>
 #endif
 
-std::mutex Timestamp::idGeneratorMutex;
+std::mutex Timestamp::timestampGeneratorMutex;
 
 /// @brief Generates timestamp
 /// @return timestamp with given precision
 std::string Timestamp::generate(Options const & options) {
-    std::lock_guard<std::mutex> lock(Timestamp::idGeneratorMutex);
+    std::lock_guard<std::mutex> lock(Timestamp::timestampGeneratorMutex);
 
     auto currentTime = std::chrono::system_clock::now();
     auto currentCalendarTime = std::chrono::system_clock::to_time_t(currentTime);
@@ -70,21 +70,8 @@ std::string Timestamp::generate(Options const & options) {
 #ifdef _DEBUG
             std::cout << "MILLISECONDS" << std::endl;
 #endif
-// TODO START encapsulate to separate function
-            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
-
-#ifdef _DEBUG
-            std::cout << "timestamp: " << timestamp.str() << std::endl;
-#endif
-
-            auto timeSinceEpoch = currentTime.time_since_epoch();
-#ifdef _DEBUG
-            assert(timeSinceEpoch.count() == currentTime.time_since_epoch().count());
-#endif
-
+            auto timeSinceEpoch = extractTimeSinceEpoch(timestamp, currentLocalCalendarTime, currentTime);
             auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
-// TODO END encapsulate to separate function
-
             auto durationSinceEpochInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds >(timeSinceEpoch);
             return assembleTimestamp(timestamp, durationSinceEpochInMilliseconds, secondsSinceEpochForSwitch, options);
         }
@@ -92,19 +79,8 @@ std::string Timestamp::generate(Options const & options) {
 #ifdef _DEBUG
             std::cout << "MICROSECONDS" << std::endl;
 #endif
-            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
-
-#ifdef _DEBUG
-            std::cout << "timestamp: " << timestamp.str() << std::endl;
-#endif
-
-            auto timeSinceEpoch = currentTime.time_since_epoch();
-#ifdef _DEBUG
-            assert(timeSinceEpoch.count() == currentTime.time_since_epoch().count());
-#endif
-
+            auto timeSinceEpoch = extractTimeSinceEpoch(timestamp, currentLocalCalendarTime, currentTime);
             auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
-
             auto durationSinceEpochInMicroseconds = std::chrono::duration_cast<std::chrono::microseconds >(timeSinceEpoch);
             return assembleTimestamp(timestamp, durationSinceEpochInMicroseconds, secondsSinceEpochForSwitch, options);
         }
@@ -112,19 +88,8 @@ std::string Timestamp::generate(Options const & options) {
 #ifdef _DEBUG
             std::cout << "NANOSECONDS" << std::endl;
 #endif
-            timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
-
-#ifdef _DEBUG
-            std::cout << "timestamp: " << timestamp.str() << std::endl;
-#endif
-
-            auto timeSinceEpoch = currentTime.time_since_epoch();
-#ifdef _DEBUG
-            assert(timeSinceEpoch.count() == currentTime.time_since_epoch().count());
-#endif
-
+            auto timeSinceEpoch = extractTimeSinceEpoch(timestamp, currentLocalCalendarTime, currentTime);
             auto secondsSinceEpochForSwitch = std::chrono::duration_cast<std::chrono::seconds>(timeSinceEpoch);
-
             auto durationSinceEpochInNanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(timeSinceEpoch);
             return assembleTimestamp(timestamp, durationSinceEpochInNanoseconds, secondsSinceEpochForSwitch, options);
         }
@@ -136,6 +101,21 @@ std::string Timestamp::generate(Options const & options) {
     }
 
     return timestamp.str();
+}
+
+template <typename TimePoint>
+auto Timestamp::extractTimeSinceEpoch(std::stringstream& timestamp, tm*& currentLocalCalendarTime, const TimePoint& currentTime) -> decltype(currentTime.time_since_epoch()) {
+    auto timeSinceEpoch = currentTime.time_since_epoch();
+    timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
+
+#ifdef _DEBUG
+    std::cout << "timestamp: " << timestamp.str() << std::endl;
+#endif
+#ifdef _DEBUG
+    assert(timeSinceEpoch.count() == currentTime.time_since_epoch().count());
+#endif
+
+    return timeSinceEpoch;
 }
 
 template <typename Time1, typename Time2>
@@ -175,3 +155,6 @@ std::string Timestamp::assembleTimestamp(std::stringstream& timestamp, Time1 tim
 #endif
     return timestamp.str();
 }
+
+// Explicit template instantiation
+template std::chrono::system_clock::duration Timestamp::extractTimeSinceEpoch<std::chrono::system_clock::time_point>(std::stringstream& timestamp, tm*& currentLocalCalendarTime, const std::chrono::system_clock::time_point& currentTime);
