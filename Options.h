@@ -30,6 +30,9 @@ public:
     bool isPaddingEnabled() const;
     uint16_t getPaddingSize() const;
 
+    // TODO add option '-f'/'--format' to change the base timestamp: will work alone or with combination with the option  'precision' with values 'milli/micro/nanoseconds' to add high precision remainder values
+//    std::string getTimeFormatString() const;
+
 private:
     Precision _precision;
     bool _nopadding;

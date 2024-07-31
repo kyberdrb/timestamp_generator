@@ -65,6 +65,9 @@ std::string Timestamp::generate(Options const & options) {
             std::cout << "SECONDS" << std::endl;
 #endif
             timestamp << std::put_time(currentLocalCalendarTime, "%Y%m%d%H%M%S");
+
+            // TODO add option '-f'/'--format' to change the base timestamp: will work alone or with combination with the option  'precision' with values 'milli/micro/nanoseconds' to add high precision remainder values
+//            timestamp << std::put_time(currentLocalCalendarTime, options->getTimeFormatString());
             return timestamp.str();
         case Options::Precision::MILLISECONDS:
 #ifdef _DEBUG
@@ -83,6 +86,7 @@ std::string Timestamp::generate(Options const & options) {
             std::cout << "NANOSECONDS" << std::endl;
 #endif
             return handlePrecision<std::chrono::nanoseconds>(timestamp, currentLocalCalendarTime, currentTime, options);
+
         default:
 #ifdef _DEBUG
             std::cout << "Unknown precision" << std::endl;

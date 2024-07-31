@@ -80,7 +80,7 @@ target_compile_options(timestamp_generator PRIVATE
 
 if(MSVC)
     message(STATUS "Setting compiler options for MSVC")
-    target_compile_options(MyProject PRIVATE
+    target_compile_options(timestamp_generator PRIVATE
             /W4            # Highest warning level
             #/WX            # Treat warnings as errors
             /RTC1          # Runtime error checks
