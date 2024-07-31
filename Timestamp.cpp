@@ -28,8 +28,14 @@ std::string Timestamp::generate(Options const & options) {
     tm* currentLocalCalendarTime = &currentLocalCalendarTimeRaw;
 
 #ifndef _MSC_VER
+    #ifdef _DEBUG
+        std::cout << "Using thread-safe 'localtime_r' function for POSIX systems" << std::endl;
+    #endif
     localtime_r(&currentCalendarTime, currentLocalCalendarTime); // thread-safe variant for POSIX systems
 #elif
+    #ifdef _DEBUG
+        std::cout << "Using thread-safe 'localtime_s' function for Windows systems" << std::endl;
+    #endif
     localtime_s(&currentCalendarTime, currentLocalCalendarTime); // thread-safe variant for Windows systems
 #endif
 
