@@ -25,7 +25,7 @@ cmake -DCMAKE_BUILD_TYPE=Release -S "${PROJECT_DIR}" -B "${BUILD_DIR_RELEASE}"
 PROJECT_NAME="${PROJECT_DIR##*/}"
 echo ${PROJECT_NAME}
 cmake --build  "${BUILD_DIR_RELEASE}" --target "${PROJECT_NAME}" --config Release --parallel $(nproc)
-# Linux: /usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-release --target timestamp_generator -j 1
+# Linux: /usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-release --target timestamp_generator -j $(nproc)
 "${BIN_DIR_RELEASE}/timestamp_generator.exe" --precision seconds
 # Linux: "${BIN_DIR_RELEASE}/timestamp_generator" --precision seconds
 
@@ -42,7 +42,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug -S "${PROJECT_DIR}" -B "${BUILD_DIR_DEBUG}"
 PROJECT_NAME="${PROJECT_DIR##*/}"
 echo ${PROJECT_NAME}
 cmake --build  "${BUILD_DIR_DEBUG}" --target "${PROJECT_NAME}" --config Debug --parallel $(nproc)
-# Linux: /usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-debug --target timestamp_generator -j 1
+# Linux: /usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-debug --target timestamp_generator -j $(nproc)
 "${BIN_DIR_DEBUG}/timestamp_generator.exe" --precision seconds
 # Linux: "${BIN_DIR_DEBUG}/timestamp_generator" --precision seconds
 

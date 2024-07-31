@@ -24,7 +24,12 @@ std::string Timestamp::generate(Options const & options) {
     auto currentTime = std::chrono::system_clock::now();
     auto currentCalendarTime = std::chrono::system_clock::to_time_t(currentTime);
 
-    tm currentLocalCalendarTimeRaw{};
+    if (currentCalendarTime == -1) {
+        std::cerr << "Failed to get the current calendar time" << std::endl;
+        return std::string{};
+    }
+
+    struct tm currentLocalCalendarTimeRaw{};
     tm* currentLocalCalendarTime = &currentLocalCalendarTimeRaw;
 
 #ifndef _MSC_VER
@@ -32,11 +37,20 @@ std::string Timestamp::generate(Options const & options) {
         std::cout << "Using thread-safe 'localtime_r' function for POSIX systems" << std::endl;
     #endif
     localtime_r(&currentCalendarTime, currentLocalCalendarTime); // thread-safe variant for POSIX systems
-#elif
+#else
     #ifdef _DEBUG
         std::cout << "Using thread-safe 'localtime_s' function for Windows systems" << std::endl;
     #endif
-    localtime_s(&currentCalendarTime, currentLocalCalendarTime); // thread-safe variant for Windows systems
+    errno_t err = localtime_s(currentLocalCalendarTime, &currentCalendarTime); // thread-safe variant for Windows systems
+    // Check if the conversion was successful
+    if (err) {
+        std::cerr << "Failed to convert calendar time to local time" << std::endl;
+        return std::string{};
+    }
+#endif
+
+#ifdef _DEBUG
+    std::cout << "Current local time: " << std::asctime(currentLocalCalendarTime);
 #endif
 
     std::stringstream timestamp;
@@ -44,6 +58,7 @@ std::string Timestamp::generate(Options const & options) {
 #ifdef _DEBUG
     std::cout << "options.getPrecision(): ";
 #endif
+
     switch (options.getPrecision()) {
         case Options::Precision::YEARS:
 #ifdef _DEBUG
