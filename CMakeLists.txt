@@ -5,16 +5,6 @@ message("Project name: ${PROJECT_NAME}")
 
 set(CMAKE_CXX_STANDARD 23)
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-#    -ggdb \
-#    -Wall -Werror -Wextra -Wpedantic \
-#    -Wunused-parameter -Weffc++ -Wsign-conversion -Wconversion -Wmissing-declarations \
-#    -fstrict-aliasing -Wstrict-aliasing \
-#    -fprofile-arcs -ftest-coverage \
-#    -fwrapv")
-#
-#message(STATUS "CXXFLAGS: ${CMAKE_CXX_FLAGS}")
-
 # Ensure CMake has a default build type
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -61,6 +51,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         $<$<CONFIG:Release>:NDEBUG>
 )
 
+if (NOT MSVC)
 target_compile_options(timestamp_generator PRIVATE
         -ggdb
         -Wall
@@ -77,19 +68,25 @@ target_compile_options(timestamp_generator PRIVATE
         #-fprofile-arcs
         #-ftest-coverage
         -fwrapv)
+endif()
 
-if(MSVC)
+if (MSVC)
     message(STATUS "Setting compiler options for MSVC")
     target_compile_options(timestamp_generator PRIVATE
             /W4            # Highest warning level
             #/WX            # Treat warnings as errors
-            /RTC1          # Runtime error checks
+            #/RTC1          # Runtime error checks - options '/O2' and '/RTC1' are incompatible when making a release build - mitigation: use '/RTC1' only in debug build
             /sdl           # Security development lifecycle checks
             /Zi            # Debug information
             /fsanitize=address   # AddressSanitizer
-
-            # if MSVC version >= 16.7 append undefined behavior sanitizer option to the compiler options list
-            #/fsanitize=undefined # UndefinedBehaviorSanitizer
+            # Check for sanitizer support (requires Visual Studio 2019 version 16.7 or later)
+            #if(MSVC_VERSION_NUM GREATER_EQUAL 1927)
+            #    list(APPEND BASE_COMPILE_OPTIONS /fsanitize=address)   # Enable AddressSanitizer
+            #    Check if UndefinedBehaviorSanitizer is supported
+            #    if(MSVC_VERSION_NUM GREATER_EQUAL 1930)  # Example version check, adjust as necessary
+            #        list(APPEND BASE_COMPILE_OPTIONS /fsanitize=undefined) # Enable UndefinedBehaviorSanitizer
+            #    endif()
+            #endif()
     )
 endif ()
 

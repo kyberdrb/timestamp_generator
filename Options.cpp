@@ -53,7 +53,7 @@ void Options::setPrecision(std::string precision) {
             precision.end(),
             precision.begin(),
             [](unsigned char character) {
-                return std::tolower(character);
+                return static_cast<char>(std::tolower(character));
             });
 
     if ("years" == precision) {

@@ -23,7 +23,16 @@ std::string Timestamp::generate(Options const & options) {
 
     auto currentTime = std::chrono::system_clock::now();
     auto currentCalendarTime = std::chrono::system_clock::to_time_t(currentTime);
-    auto currentLocalCalendarTime = std::localtime(&currentCalendarTime);
+
+    tm currentLocalCalendarTimeRaw{};
+    tm* currentLocalCalendarTime = &currentLocalCalendarTimeRaw;
+
+#ifndef _MSC_VER
+    localtime_r(&currentCalendarTime, currentLocalCalendarTime); // thread-safe variant for POSIX systems
+#elif
+    localtime_s(&currentCalendarTime, currentLocalCalendarTime); // thread-safe variant for Windows systems
+#endif
+
     std::stringstream timestamp;
 
 #ifdef _DEBUG
