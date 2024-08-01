@@ -18,14 +18,15 @@ PROJECT_DIR="$(pwd)"
 echo $PROJECT_DIR
 BUILD_DIR_RELEASE="${PROJECT_DIR}/cmake-build-release"
 cmake --build  "${BUILD_DIR_RELEASE}" --target clean
+rm --recursive --force "${BUILD_DIR_RELEASE}"
 BIN_DIR_RELEASE="${BUILD_DIR_RELEASE}/Release"
 ls -l "${BIN_DIR_RELEASE}/timestamp_generator.exe"
-cmake -DCMAKE_BUILD_TYPE=Release -S "${PROJECT_DIR}" -B "${BUILD_DIR_RELEASE}"
-# Linux: /usr/bin/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ -G Ninja -S /home/laptop/git/kyberdrb/timestamp_generator -B /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-release
+cmake -DCMAKE_BUILD_TYPE=Release -S "${PROJECT_DIR}" -B "${BUILD_DIR_RELEASE}" --verbose
+# Linux: /usr/bin/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ -G Ninja -S /home/laptop/git/kyberdrb/timestamp_generator -B /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-release --verbose
 PROJECT_NAME="${PROJECT_DIR##*/}"
 echo ${PROJECT_NAME}
-cmake --build  "${BUILD_DIR_RELEASE}" --target "${PROJECT_NAME}" --config Release --parallel $(nproc)
-# Linux: /usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-release --target timestamp_generator -j $(nproc)
+cmake --build  "${BUILD_DIR_RELEASE}" --target "${PROJECT_NAME}" --config Release --parallel $(nproc) --verbose
+# Linux: /usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-release --target timestamp_generator -j $(nproc) --verbose
 "${BIN_DIR_RELEASE}/timestamp_generator.exe" --precision seconds
 # Linux: "${BIN_DIR_RELEASE}/timestamp_generator" --precision seconds
 
@@ -35,14 +36,15 @@ PROJECT_DIR="$(pwd)"
 echo $PROJECT_DIR
 BUILD_DIR_DEBUG="${PROJECT_DIR}/cmake-build-debug"
 cmake --build  "${BUILD_DIR_DEBUG}" --target clean
+rm --recursive --force "${BUILD_DIR_DEBUG}"
 BIN_DIR_DEBUG="${BUILD_DIR_DEBUG}/Debug"
 ls -l "${BIN_DIR_DEBUG}/timestamp_generator.exe"
-cmake -DCMAKE_BUILD_TYPE=Debug -S "${PROJECT_DIR}" -B "${BUILD_DIR_DEBUG}"
-# Linux: /usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ -G Ninja -S /home/laptop/git/kyberdrb/timestamp_generator -B /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-debug
+cmake -DCMAKE_BUILD_TYPE=Debug -S "${PROJECT_DIR}" -B "${BUILD_DIR_DEBUG}" --verbose
+# Linux: /usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ -G Ninja -S /home/laptop/git/kyberdrb/timestamp_generator -B /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-debug --verbose
 PROJECT_NAME="${PROJECT_DIR##*/}"
 echo ${PROJECT_NAME}
-cmake --build  "${BUILD_DIR_DEBUG}" --target "${PROJECT_NAME}" --config Debug --parallel $(nproc)
-# Linux: /usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-debug --target timestamp_generator -j $(nproc)
+cmake --build  "${BUILD_DIR_DEBUG}" --target "${PROJECT_NAME}" --config Debug --parallel $(nproc) --verbose
+# Linux: /usr/bin/cmake --build /home/laptop/git/kyberdrb/timestamp_generator/cmake-build-debug --target timestamp_generator -j $(nproc) --verbose
 "${BIN_DIR_DEBUG}/timestamp_generator.exe" --precision seconds
 # Linux: "${BIN_DIR_DEBUG}/timestamp_generator" --precision seconds
 
