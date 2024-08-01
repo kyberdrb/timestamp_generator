@@ -8,6 +8,7 @@
 
 #include <chrono>
 #include <iomanip>
+#include <iostream>
 
 #ifdef _DEBUG
     #include <cassert>
@@ -50,7 +51,25 @@ std::string Timestamp::generate(Options const & options) {
 #endif
 
 #ifdef _DEBUG
-    std::cout << "Current local time: " << std::asctime(currentLocalCalendarTime);
+    #ifndef _MSC_VER
+        std::cout << "Current local time: " << std::asctime(currentLocalCalendarTime);
+    #else
+        //std::time_t now = std::time(nullptr);
+//        std::tm* localTime = std::localtime(&now);
+        std::tm* localTime = std::localtime(&currentCalendarTime);
+
+        // Define a buffer with sufficient size
+        char buffer[100];
+
+        // Use asctime_s for thread safety and buffer size safety
+        errno_t err = asctime_s(buffer, sizeof(buffer), localTime);
+        //errno_t err = asctime_s(buffer, sizeof(buffer), currentLocalCalendarTime);
+        if (err != 0) {
+            std::cerr << "Error converting time" << std::endl;
+        } else {
+            std::cout << "Current local time: " << buffer;
+        }
+    #endif
 #endif
 
     std::stringstream timestamp;
