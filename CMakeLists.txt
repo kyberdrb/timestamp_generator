@@ -64,8 +64,10 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 )
 
 if (NOT MSVC)
+# Debug
 target_compile_options(timestamp_generator PRIVATE
-        -ggdb
+    -g
+    #-ggdb
         -Wall
         -Wextra
         -Werror
@@ -85,17 +87,6 @@ endif()
 if (MSVC)
     message(STATUS "Setting compiler options for MSVC")
 
-    # TODO add only for Debug build
-    # TODO add another set of compiler options for Release build
-#    target_compile_options(timestamp_generator PRIVATE
-#            /W4            # Highest warning level
-#            /WX            # Treat warnings as errors
-#            #/RTC1          # Runtime error checks - options '/O2' and '/RTC1' are incompatible when making a release build - mitigation: use '/RTC1' only in debug build
-#            /sdl           # Security development lifecycle checks
-#            /Zi            # Debug information
-#            /fsanitize=address   # AddressSanitizer - requires modifying the Visual Studio installer and installing module 'C++ AddressSanitizer' - disabled until I find out how to resolve error of not finding file 'clang_rt.asan_dynamic-x86_64.dll'
-#    )
-
     # Define Debug build options
     set(DEBUG_COMPILE_OPTIONS
             /Od
@@ -104,11 +95,11 @@ if (MSVC)
             /Wall
             /W4
             /WX
-            /fsanitize=address
+            /fsanitize=address # AddressSanitizer - requires modifying the Visual Studio installer and installing module 'C++ AddressSanitizer' either from search bar in category 'Debugging and Testing' or in the tree view from 'Desktop development in C++ -> Optional -> C++ AddressSanitizer' 
     )
     set(DEBUG_LINK_OPTIONS
-            /DEBUG
-            /INCREMENTAL
+            /DEBUG # extended reporting for address sanitizer enabled by '/fsanitize=address'
+            /INCREMENTAL:NO # set to 'NO' to resolve warning "LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata"
             /SUBSYSTEM:CONSOLE
     )
 
@@ -144,16 +135,26 @@ if (MSVC)
             "$<$<CONFIG:Release>:${RELEASE_LINK_OPTIONS}>"
     )
 
-    # Ensure the ASan DLL for enhanced reporting for compiler option '/fsanitize=address' is copied to the output directory
+    # Copy the ASan DLL for enhanced reporting for compiler option '/fsanitize=address' is copied to the output directory
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        add_custom_command(TARGET timestamp_generator POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64/clang_rt.asan_dbg_dynamic-x86_64.dll"
+            "$<TARGET_FILE_DIR:timestamp_generator>")
+    endif()
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_custom_command(TARGET timestamp_generator POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64/clang_rt.asan_dynamic-x86_64.dll"
+            "$<TARGET_FILE_DIR:timestamp_generator>")
+    endif()
+
 #    add_custom_command(TARGET timestamp_generator POST_BUILD
 #            COMMAND ${CMAKE_COMMAND} -E copy_if_different
 #            "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64/clang_rt.asan_dbg_dynamic-x86_64.dll"
-#            "$<TARGET_FILE_DIR:timestamp_generator>")
-
-    add_custom_command(TARGET timestamp_generator POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64/clang_rt.asan_dbg_dynamic-x86_64.dll"
-            "$<$<CONFIG:Debug>:${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/>)")
+#            "$<$<CONFIG:Debug>:${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/>)")
 
 #    add_custom_command(TARGET timestamp_generator POST_BUILD
 #            COMMAND ${CMAKE_COMMAND} -E copy_if_different

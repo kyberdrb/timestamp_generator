@@ -11,11 +11,20 @@
 #include <iostream>
 
 #ifdef _DEBUG
-    #include <cassert>
-    #include <iostream>
+#include <cassert>
+    #ifdef _MSC_VER
+        #include <iostream>
+    #endif
 #endif
 
 std::mutex Timestamp::timestampGeneratorMutex;
+
+// Explicit template instantiation
+template std::chrono::system_clock::duration Timestamp::extractTimeSinceEpoch<std::chrono::system_clock::time_point>(std::stringstream& timestamp, tm*& currentLocalCalendarTime, const std::chrono::system_clock::time_point& currentTime);
+
+template std::string Timestamp::handlePrecision<std::chrono::milliseconds>(std::stringstream&, tm*&, const std::chrono::system_clock::time_point&, const Options&);
+template std::string Timestamp::handlePrecision<std::chrono::microseconds>(std::stringstream&, tm*&, const std::chrono::system_clock::time_point&, const Options&);
+template std::string Timestamp::handlePrecision<std::chrono::nanoseconds>(std::stringstream&, tm*&, const std::chrono::system_clock::time_point&, const Options&);
 
 /// @brief Generates timestamp
 /// @return timestamp with given precision
@@ -37,39 +46,38 @@ std::string Timestamp::generate(Options const & options) {
     #ifdef _DEBUG
         std::cout << "Using thread-safe 'localtime_r' function for POSIX systems" << std::endl;
     #endif
-    localtime_r(&currentCalendarTime, currentLocalCalendarTime); // thread-safe variant for POSIX systems
+    localtime_r(&currentCalendarTime, currentLocalCalendarTime);
 #else
     #ifdef _DEBUG
-        std::cout << "Using thread-safe 'localtime_s' function for Windows systems" << std::endl;
+        std::cout << "Using thread-safe 'localtime_s' function for Windows systems with MSVC compiler" << std::endl;
     #endif
-    errno_t err = localtime_s(currentLocalCalendarTime, &currentCalendarTime); // thread-safe variant for Windows systems
-    // Check if the conversion was successful
-    if (err) {
-        std::cerr << "Failed to convert calendar time to local time" << std::endl;
-        return std::string{};
+    {
+        errno_t err = localtime_s(currentLocalCalendarTime, &currentCalendarTime);
+        if (err) {
+            std::cerr << "Failed to convert calendar time to local time" << std::endl;
+            return std::string{};
+        }
     }
 #endif
 
-#ifdef _DEBUG
-    #ifndef _MSC_VER
-        std::cout << "Current local time: " << std::asctime(currentLocalCalendarTime);
-    #else
-        //std::time_t now = std::time(nullptr);
-//        std::tm* localTime = std::localtime(&now);
-        std::tm* localTime = std::localtime(&currentCalendarTime);
+#ifndef _MSC_VER
+    #ifdef _DEBUG
+        std::cout << "Current local time (using POSIX compatible function 'std::asctime'): " << std::asctime(currentLocalCalendarTime);
+    #endif
+#else
+    #ifdef _DEBUG
+        std::cout << "Current local time (using 'std::asctime_s' to resolve warning at building with MSVC compiler for thread safety and buffer size safety): " << std::asctime(currentLocalCalendarTime);
+    #endif
 
-        // Define a buffer with sufficient size
-        char buffer[100];
-
-        // Use asctime_s for thread safety and buffer size safety
-        errno_t err = asctime_s(buffer, sizeof(buffer), localTime);
-        //errno_t err = asctime_s(buffer, sizeof(buffer), currentLocalCalendarTime);
+    char buffer[100];
+    {
+        errno_t err = asctime_s(buffer, sizeof(buffer), currentLocalCalendarTime);
         if (err != 0) {
             std::cerr << "Error converting time" << std::endl;
         } else {
             std::cout << "Current local time: " << buffer;
         }
-    #endif
+    }
 #endif
 
     std::stringstream timestamp;
@@ -206,10 +214,3 @@ std::string Timestamp::assembleTimestamp(std::stringstream& timestamp, Time1 tim
 #endif
     return timestamp.str();
 }
-
-// Explicit template instantiation
-template std::chrono::system_clock::duration Timestamp::extractTimeSinceEpoch<std::chrono::system_clock::time_point>(std::stringstream& timestamp, tm*& currentLocalCalendarTime, const std::chrono::system_clock::time_point& currentTime);
-
-template std::string Timestamp::handlePrecision<std::chrono::milliseconds>(std::stringstream&, tm*&, const std::chrono::system_clock::time_point&, const Options&);
-template std::string Timestamp::handlePrecision<std::chrono::microseconds>(std::stringstream&, tm*&, const std::chrono::system_clock::time_point&, const Options&);
-template std::string Timestamp::handlePrecision<std::chrono::nanoseconds>(std::stringstream&, tm*&, const std::chrono::system_clock::time_point&, const Options&);
