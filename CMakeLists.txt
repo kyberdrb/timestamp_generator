@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.28) # for Visual Studio (e.g. to rebuild/regenerate CMake cache)
+#cmake_minimum_required(VERSION 3.29) # for Git Bash - building from terminal, Linux etc.
+
 project(timestamp_generator)
 
 message("Project name: ${PROJECT_NAME}")
