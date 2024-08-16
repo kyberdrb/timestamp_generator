@@ -66,7 +66,7 @@ std::string Timestamp::generate(Options const & options) {
     #endif
 #else
     #ifdef _DEBUG
-        std::cout << "Current local time (using 'std::asctime_s' to resolve warning at building with MSVC compiler for thread safety and buffer size safety): " << std::asctime(currentLocalCalendarTime);
+        std::cout << "Current local time (using 'std::asctime_s' to resolve warning at building with MSVC compiler for thread safety and buffer size safety): ";
     #endif
 
     char buffer[100];
