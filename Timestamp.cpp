@@ -74,8 +74,6 @@ std::string Timestamp::generate(Options const & options) {
         errno_t err = asctime_s(buffer, sizeof(buffer), currentLocalCalendarTime);
         if (err != 0) {
             std::cerr << "Error converting time" << std::endl;
-        } else {
-            std::cout << "Current local time: " << buffer;
         }
     }
 #endif
