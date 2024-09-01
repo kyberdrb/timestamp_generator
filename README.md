@@ -9,6 +9,8 @@ On Windows platform open Git Bash or equivalent LINUX/UNIX like terminal emulato
 
 Below are provided instructions to build release, debug and all/both versions:
 
+TODO: scriptify
+
 Release
 
 ```sh
