@@ -33,22 +33,22 @@ endif()
 
 # List common source files
 set(SOURCES
-        Timestamp.cpp
-        Options.cpp
-        OptionParserCrossPlatformStdOnly.cpp
+    Timestamp.cpp
+    Options.cpp
+    OptionParserCrossPlatformStdOnly.cpp
 )
 
 # List common header files
 set(HEADERS
-        Timestamp.h
-        Options.h
-        OptionParserCrossPlatformStdOnly.h
-        CommandLineArgumentsOptionsParser.h
+    Timestamp.h
+    Options.h
+    OptionParserCrossPlatformStdOnly.h
+    CommandLineArgumentsOptionsParser.h
 )
 
 # Conditionally add source and header files for non-MSVC compilers
 if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    message(STATUS "POSIX-conforming compiler detected: Including files for class 'OptionParserPosixOnlyViaGetopt' into the build")
+    message(STATUS "GCC/Clang compatible compiler detected: Including files for class 'OptionParserPosixOnlyViaGetopt' into the build")
     list(APPEND SOURCES OptionParserPosixOnlyViaGetopt.cpp)
     list(APPEND HEADERS OptionParserPosixOnlyViaGetopt.h)
 endif()
@@ -66,24 +66,82 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 )
 
 if (NOT MSVC)
-# Debug
-target_compile_options(timestamp_generator PRIVATE
-    -g
-    #-ggdb
-        -Wall
-        -Wextra
-        -Werror
-        -Wpedantic
-        -Wunused-parameter
-        -Weffc++
-        -Wsign-conversion
-        -Wconversion
-        -Wmissing-declarations
-        -fstrict-aliasing
-        -Wstrict-aliasing
-        #-fprofile-arcs
-        #-ftest-coverage
-        -fwrapv)
+    message(STATUS "Applying GCC/Clang compiler and linker options")
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_compile_options(timestamp_generator PRIVATE
+            -O0
+            -g # for potentional compatibility with clang
+            #-ggdb
+            -Wall
+            -Wextra
+            -Werror
+            -Wpedantic
+            -Wunused-parameter
+            -Weffc++
+            -Wsign-conversion
+            -Wconversion
+            -Wmissing-declarations
+            -fstrict-aliasing
+            -Wstrict-aliasing
+            #-fprofile-arcs
+            #-ftest-coverage
+            -fwrapv
+            -fstack-protector-strong
+
+#            ASan support disabled as it interferes with Valgrind
+#            -fsanitize=undefined
+#            -fsanitize=address
+        )
+
+        target_link_options(timestamp_generator PRIVATE
+            -O0
+            -g
+            -Wl,--no-as-needed
+            -Wl,-Map=output.map
+
+#            ASan support disabled as it interferes with Valgrind
+#            -fsanitize=undefined
+#            -fsanitize=address
+        )
+
+        # Link the AddressSanitizer library: Unnecessary for GCC and Clang + interference with Valgrind because it produces an error when run:
+        # To resolve error
+        #   "==283397==ASan runtime does not come first in initial library list; you should either link runtime to your application or manually preload it with LD_PRELOAD."
+        # either disable AddressSanitizer alltogether and use Valgrind
+        # or keep the AddressSanitizer and start the binary as-is
+#        find_library(ASAN_LIB asan)
+#        if (ASAN_LIB)
+#            message(STATUS "ASan library found: ${ASAN_LIB}")
+#            target_link_libraries(timestamp_generator PRIVATE ${ASAN_LIB})
+#        endif()
+    endif()
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        target_compile_options(timestamp_generator PRIVATE
+            -O3
+            -Wall
+            -Wextra
+            -Werror
+            -Wpedantic
+            -Wunused-parameter
+            -Weffc++
+            -Wsign-conversion
+            -Wconversion
+            -Wmissing-declarations
+            -fstrict-aliasing
+            -Wstrict-aliasing
+            #-fprofile-arcs
+            #-ftest-coverage
+            -fwrapv
+            -fstack-protector-strong
+        )
+
+        target_link_options(timestamp_generator PRIVATE
+            -s
+            -flto
+        )
+    endif()
 endif()
 
 if (MSVC)
@@ -152,18 +210,10 @@ if (MSVC)
             "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64/clang_rt.asan_dynamic-x86_64.dll"
             "$<TARGET_FILE_DIR:timestamp_generator>")
     endif()
+endif()
 
-#    add_custom_command(TARGET timestamp_generator POST_BUILD
-#            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#            "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64/clang_rt.asan_dbg_dynamic-x86_64.dll"
-#            "$<$<CONFIG:Debug>:${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/>)")
+get_target_property(COMPILE_OPS timestamp_generator COMPILE_OPTIONS)
+message(STATUS "Compile options for 'timestamp_generator': ${COMPILE_OPS}")
 
-#    add_custom_command(TARGET timestamp_generator POST_BUILD
-#            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#            "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64/clang_rt.asan_dbg_dynamic-x86_64.dll"
-#            "$<$<CONFIG:Release>:${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/>)")
-
-endif ()
-
-get_target_property(COMPILE_OPTIONS timestamp_generator COMPILE_OPTIONS)
-message(STATUS "Compile options for 'timestamp_generator': ${COMPILE_OPTIONS}")
+get_target_property(LINK_OPS timestamp_generator LINK_OPTIONS)
+message(STATUS "Link options for 'timestamp_generator': ${LINK_OPS}")

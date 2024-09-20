@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     // TODO add option '-t'/'--trim-trailing-zeros' from remainder: effective only for option 'precision' with values 'milli/micro/nanoseconds'
     // TODO add option '-f'/'--format' which will accept the same value as the format that goes to the 'date' utility to change the base timestamp: will work alone or with combination with the option  'precision' with values 'milli/micro/nanoseconds' to add high precision remainder values
     // TODO add option '-e'/'--epoch' which will generate the time from epoch timestamp in given precision given by '--precision' option (by default in seconds)
-    // TODO add option to convert epoch timestamp to date timestamp and v.v.
+    // TODO add option to convert epoch timestamp to date timestamp and v.v.: '--convert-from='/'-c' '--convert-to='/'-t'; both parameters necessary in an arbitrary order
 
     return 0;
 }

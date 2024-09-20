@@ -220,4 +220,4 @@ OPTIONS
            When present, this option disables padding the suffix after seconds with zeros '0' from left, when the value is less than three digits long, to maintain a fixed-length format.
 ```
 
-Note: Options are not implemented yet.
+Note: Some options might not be implemented yet.
